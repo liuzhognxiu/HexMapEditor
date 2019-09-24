@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Administrator.DESKTOP-PLMFL1F\.Rider2018.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Administrator.DESKTOP-PLMFL1F\.Rider2018.3\system\resharper-host\local\Transient\ReSharperHost\v183\SolutionCaches\_test.175131370.00" t="ExcludeRecursive" />
+    <e p="F:\UnityDemo\test" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp-firstpass.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets\AnimMapBaker" t="Include">
+        <e p="Script" t="Include">
+          <e p="AnimMapBaker.cs" t="Include" />
+          <e p="Editor" t="Include">
+            <e p="AnimMapBakerWindow.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Shader" t="Include">
+          <e p="AnimMapShader.shader" t="Include" />
+        </e>
+      </e>
+      <e p="Assets\Color.shader" t="Include" />
+      <e p="Assets\Editor" t="Include">
+        <e p="BuffEditor" t="Include">
+          <e p="BulidLoadBuff.cs" t="Include" />
+          <e p="CSBuff.cs" t="Include" />
+          <e p="EnumLabelAttribute.cs" t="Include" />
+          <e p="EnumLabelDrawer.cs" t="Include" />
+        </e>
+        <e p="Check" t="Include">
+          <e p="CheckObject.cs" t="Include" />
+          <e p="ResCheckEditorWindow.cs" t="Include" />
+        </e>
+        <e p="Const.cs" t="Include" />
+        <e p="CSEditor.cs" t="Include" />
+        <e p="ExcelToJson.cs" t="Include" />
+        <e p="HexCoordinatesDrawer.cs" t="Include" />
+        <e p="LoadCSV" t="Include">
+          <e p="CSVReader.cs" t="Include" />
+        </e>
+        <e p="MapEditor" t="Include">
+          <e p="HexMapCellTypeWindow.cs" t="Include" />
+          <e p="HexMapEditor.cs" t="Include" />
+          <e p="MapEditor.cs" t="Include" />
+        </e>
+        <e p="MapEditorData.cs" t="Include" />
+        <e p="RenderCubemapWizard.cs" t="Include" />
+        <e p="ResCheck" t="Include">
+          <e p="BaseWindow.cs" t="Include" />
+          <e p="ChechCharAnimclipNotUsed.cs" t="Include" />
+          <e p="CheckBase.cs" t="Include" />
+          <e p="CheckBaseList.cs" t="Include" />
+          <e p="CheckBaseStringInt.cs" t="Include" />
+          <e p="CheckBaseStringList.cs" t="Include" />
+          <e p="CheckBaseStringString.cs" t="Include" />
+          <e p="CheckBatchmeshValid.cs" t="Include" />
+          <e p="CheckCameraContains.cs" t="Include" />
+          <e p="CheckCharacterHangpoint.cs" t="Include" />
+          <e p="CheckCharAnimFbxError.cs" t="Include" />
+          <e p="CheckCharAnimPrefabError.cs" t="Include" />
+          <e p="CheckCharAnimTypeError.cs" t="Include" />
+          <e p="CheckColliderHierarchy.cs" t="Include" />
+          <e p="CheckColliderTriangles.cs" t="Include" />
+          <e p="CheckComponentLost.cs" t="Include" />
+          <e p="CheckDependenciesInRes.cs" t="Include" />
+          <e p="CheckEffectParticleCount.cs" t="Include" />
+          <e p="CheckEffectRenderCount.cs" t="Include" />
+          <e p="CheckEmptyDir.cs" t="Include" />
+          <e p="CheckFileAllUnityFiles.cs" t="Include" />
+          <e p="CheckFileAnimController.cs" t="Include" />
+          <e p="CheckFileBuiltInShader.cs" t="Include" />
+          <e p="CheckFileDependedBy.cs" t="Include" />
+          <e p="CheckFileDependencies.cs" t="Include" />
+          <e p="CheckFileFbxImportMatON.cs" t="Include" />
+          <e p="CheckFileFbxObjectsCount.cs" t="Include" />
+          <e p="CheckFileFbxObjectsName.cs" t="Include" />
+          <e p="CheckFileNameCaps.cs" t="Include" />
+          <e p="CheckFileNameSpace.cs" t="Include" />
+          <e p="CheckFileTextureSize.cs" t="Include" />
+          <e p="CheckFileTextureSquare.cs" t="Include" />
+          <e p="CheckFileTypes.cs" t="Include" />
+          <e p="CheckLayerMatch.cs" t="Include" />
+          <e p="CheckMaterialLost.cs" t="Include" />
+          <e p="CheckMeshReuse.cs" t="Include" />
+          <e p="CheckMode.cs" t="Include" />
+          <e p="CheckRepeatBase.cs" t="Include" />
+          <e p="CheckRepeatGuiResName.cs" t="Include" />
+          <e p="CheckSceneObjCount.cs" t="Include" />
+          <e p="CheckSceneObjName.cs" t="Include" />
+          <e p="CheckSkybox.cs" t="Include" />
+          <e p="CheckTextureRef.cs" t="Include" />
+          <e p="Const.cs" t="Include" />
+          <e p="Drawing.cs" t="Include" />
+          <e p="ICheck.cs" t="Include" />
+          <e p="LayerWindow.cs" t="Include" />
+          <e p="ResCheckMenu.cs" t="Include" />
+          <e p="ResCheckMgr.cs" t="Include" />
+          <e p="ResCheckWhiteList.cs" t="Include" />
+          <e p="TriangleCounter.cs" t="Include" />
+          <e p="TriangleCountManager.cs" t="Include" />
+        </e>
+        <e p="SceneEditor" t="Include">
+          <e p="EditorEntity.cs" t="Include" />
+          <e p="EditorMonster.cs" t="Include" />
+          <e p="ResWindow.cs" t="Include" />
+          <e p="SceneBuffer.cs" t="Include" />
+          <e p="SceneCache.cs" t="Include" />
+          <e p="SceneEditor.cs" t="Include" />
+          <e p="SceneEditorWindow.cs" t="Include" />
+          <e p="SceneResData.cs" t="Include" />
+          <e p="SceneUtils.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Assets\JSON.cs" t="Include" />
+      <e p="Assets\Materials" t="Include">
+        <e p="Color.shader" t="Include" />
+        <e p="Estuary.shader" t="Include" />
+        <e p="River.shader" t="Include" />
+        <e p="Road.shader" t="Include" />
+        <e p="Water Shore.shader" t="Include" />
+        <e p="Water.cginc" t="Include" />
+        <e p="Water.shader" t="Include" />
+      </e>
+      <e p="Assets\Plugins" t="Include">
+        <e p="Sirenix" t="Include">
+          <e p="Assemblies" t="Include">
+            <e p="link.xml" t="Include" />
+            <e p="Sirenix.OdinInspector.Attributes.xml" t="Include" />
+            <e p="Sirenix.OdinInspector.Editor.xml" t="Include" />
+            <e p="Sirenix.Serialization.Config.xml" t="Include" />
+            <e p="Sirenix.Utilities.Editor.xml" t="Include" />
+            <e p="Sirenix.Utilities.xml" t="Include" />
+          </e>
+          <e p="Demos" t="Include">
+            <e p="Custom Attribute Processors" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="AttributeProcessorForListItemsExample.cs" t="Include" />
+                <e p="AttributeProcessorPriorityExample.cs" t="Include" />
+                <e p="Bar.cs" t="Include" />
+                <e p="BasicAttributeProcessorExample.cs" t="Include" />
+                <e p="CustomAttributeProcessorLocatorExample.cs" t="Include" />
+                <e p="CustomizeDictionaryKeyValueExample.cs" t="Include" />
+                <e p="Foo.cs" t="Include" />
+                <e p="PutAttributesOnAnyType.cs" t="Include" />
+                <e p="SelfAndChildrenExample.cs" t="Include" />
+                <e p="TabGroupByDeclaringType.cs" t="Include" />
+              </e>
+            </e>
+            <e p="Custom Drawers" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="CustomDrawerExample.cs" t="Include" />
+                <e p="CustomGroupExample.cs" t="Include" />
+                <e p="GenericDrawerExample.cs" t="Include" />
+                <e p="GenericMenuExample.cs" t="Include" />
+                <e p="HealthBarExample.cs" t="Include" />
+                <e p="InstancedDrawerExample.cs" t="Include" />
+                <e p="MinesweeperExample.cs" t="Include" />
+                <e p="PriorityExamples.cs" t="Include" />
+                <e p="ReflectionExample.cs" t="Include" />
+                <e p="StringMemberHelperExample.cs" t="Include" />
+                <e p="ValidationExample.cs" t="Include" />
+              </e>
+            </e>
+            <e p="Editor Windows" t="Include">
+              <e p="Scripts" t="Include">
+                <e p="Editor" t="Include">
+                  <e p="BasicOdinEditorExampleWindow.cs" t="Include" />
+                  <e p="OdinMenuEditorWindowExample.cs" t="Include" />
+                  <e p="OdinMenuStyleExample.cs" t="Include" />
+                  <e p="OverrideGetTargetsExampleWindow.cs" t="Include" />
+                  <e p="QuicklyInspectObjects.cs" t="Include" />
+                  <e p="SomeData.cs" t="Include" />
+                  <e p="SomeTextureToolWindow.cs" t="Include" />
+                </e>
+              </e>
+            </e>
+            <e p="Sample - RPG Editor" t="Include">
+              <e p="Icons" t="Include">
+                <e p="icons_by_ravenmore.txt" t="Include" />
+              </e>
+              <e p="Scripts" t="Include">
+                <e p="Character" t="Include">
+                  <e p="Character.cs" t="Include" />
+                  <e p="CharacterAlignment.cs" t="Include" />
+                  <e p="CharacterEquipment.cs" t="Include" />
+                  <e p="CharacterOverview.cs" t="Include" />
+                  <e p="CharacterStats.cs" t="Include" />
+                </e>
+                <e p="Editor" t="Include">
+                  <e p="CharacterTable.cs" t="Include" />
+                  <e p="ItemDrawer.cs" t="Include" />
+                  <e p="ItemSlotCellDrawer.cs" t="Include" />
+                  <e p="RPGEditorWindow.cs" t="Include" />
+                  <e p="ScriptableObjectCreator.cs" t="Include" />
+                </e>
+                <e p="Items" t="Include">
+                  <e p="Armor.cs" t="Include" />
+                  <e p="ConsumableItem.cs" t="Include" />
+                  <e p="EquipableItem.cs" t="Include" />
+                  <e p="Item.cs" t="Include" />
+                  <e p="ItemTypes.cs" t="Include" />
+                  <e p="WeaponItem.cs" t="Include" />
+                </e>
+                <e p="Misc" t="Include">
+                  <e p="ItemSlot.cs" t="Include" />
+                  <e p="StatList.cs" t="Include" />
+                  <e p="StatType.cs" t="Include" />
+                  <e p="StatValue.cs" t="Include" />
+                </e>
+              </e>
+            </e>
+          </e>
+          <e p="Odin Inspector" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="Editor" t="Include">
+                <e p="AssemblyImportSettingsAutomation.cs" t="Include" />
+                <e p="BuildAOTAutomation.cs" t="Include" />
+                <e p="EnsureOdinInspectorDefine.cs" t="Include" />
+                <e p="FixBrokenUnityObjectWrapperDrawer.cs" t="Include" />
+                <e p="Sirenix.OdinInspector.CompatibilityLayer.Editor.asmdef" t="Include" />
+                <e p="SyncListDrawer.cs" t="Include" />
+                <e p="SyncVarAttributeDrawer.cs" t="Include" />
+                <e p="Vector2IntMinMaxAttributeDrawer.cs" t="Include" />
+                <e p="VectorIntDrawers.cs" t="Include" />
+                <e p="VectorIntPropertyResolvers.cs" t="Include" />
+              </e>
+              <e p="SerializedNetworkBehaviour.cs" t="Include" />
+              <e p="Sirenix.OdinInspector.CompatibilityLayer.asmdef" t="Include" />
+              <e p="VectorIntFormatters.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Readme.txt" t="Include" />
+        </e>
+      </e>
+      <e p="Assets\Reader.cs" t="Include" />
+      <e p="Assets\Sctipt" t="Include">
+        <e p="EdgeVertices.cs" t="Include" />
+        <e p="HexCell.cs" t="Include" />
+        <e p="HexCoordinates.cs" t="Include" />
+        <e p="HexDirection.cs" t="Include" />
+        <e p="HexGrid.cs" t="Include" />
+        <e p="HexGridChunk.cs" t="Include" />
+        <e p="HexMesh.cs" t="Include" />
+        <e p="HexMetrics.cs" t="Include" />
+        <e p="ListPool.cs" t="Include" />
+      </e>
+      <e p="Assets\StreamingAssets" t="Include">
+        <e p="json.txt" t="Include" />
+      </e>
+      <e p="Assets\Utility.cs" t="Include" />
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Sirenix.OdinInspector.CompatibilityLayer.csproj" t="IncludeRecursive" />
+      <e p="Sirenix.OdinInspector.CompatibilityLayer.Editor.csproj" t="IncludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+      <e p="test.sln" t="IncludeFlat" />
+    </e>
+  </component>
+</project>

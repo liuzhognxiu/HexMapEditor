@@ -1,0 +1,6 @@
+string,float,float,int,bool
+ID,Act,HP,Hight,Dead
+2,0,0,1,FALSE
+3,0.1,0.3,12,TRUE
+4,0.2,0.4,31,FALSE
+5,0.3,0.5,14,TRUE
