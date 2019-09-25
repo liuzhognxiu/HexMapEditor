@@ -82,6 +82,8 @@ public static class HexMetrics
     public const float riverSurfaceElevationOffset = -0.5f;
     
     public const float waterElevationOffset = -0.5f;
+
+    public static Color[] colors;
     
     /// <summary>
     /// 水面的岸过多，或者是需要隐藏海岸水的系数

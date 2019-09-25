@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 
 public class HexCell : MonoBehaviour
 {
@@ -8,18 +9,36 @@ public class HexCell : MonoBehaviour
 
     public HexGridChunk chunk;
 
+    int terrainTypeIndex;
+
+
+
+
     public Color Color
     {
-        get { return color; }
+        get { return HexMetrics.colors[terrainTypeIndex]; }
+//        set
+//        {
+//            if (color == value)
+//            {
+//                return;
+//            }
+//
+//            color = value;
+//            Refresh();
+//        }
+    }
+
+    public int TerrainTypeIndex
+    {
+        get { return terrainTypeIndex; }
         set
         {
-            if (color == value)
+            if (terrainTypeIndex != value)
             {
-                return;
+                terrainTypeIndex = value;
+                Refresh();
             }
-
-            color = value;
-            Refresh();
         }
     }
 
@@ -34,17 +53,7 @@ public class HexCell : MonoBehaviour
             }
 
             elevation = value;
-            Vector3 position = transform.localPosition;
-            position.y = value * HexMetrics.elevationStep;
-            position.y +=
-                (HexMetrics.SampleNoise(position).y * 2f - 1f) *
-                HexMetrics.elevationPerturbStrength;
-            transform.localPosition = position;
-
-            Vector3 uiPosition = uiRect.localPosition;
-            uiPosition.z = -position.y;
-            uiRect.localPosition = uiPosition;
-
+            RefreshPosition();
             ValidateRivers();
 
             //检查方向上道路，高度差过大的时候移除道路
@@ -81,14 +90,16 @@ public class HexCell : MonoBehaviour
     /// <summary>
     /// 水表面的偏移量
     /// </summary>
-    public float WaterSurfaceY {
-        get {
+    public float WaterSurfaceY
+    {
+        get
+        {
             return
                 (waterLevel + HexMetrics.waterElevationOffset) *
                 HexMetrics.elevationStep;
         }
     }
-    
+
     Color color;
 
     int elevation = int.MinValue;
@@ -173,42 +184,45 @@ public class HexCell : MonoBehaviour
 
     int waterLevel;
 
-    public int UrbanLevel {
-        get {
-            return urbanLevel;
-        }
-        set {
-            if (urbanLevel != value) {
+    public int UrbanLevel
+    {
+        get { return urbanLevel; }
+        set
+        {
+            if (urbanLevel != value)
+            {
                 urbanLevel = value;
                 RefreshSelfOnly();
             }
         }
     }
-    
-    public int FarmLevel {
-        get {
-            return farmLevel;
-        }
-        set {
-            if (farmLevel != value) {
+
+    public int FarmLevel
+    {
+        get { return farmLevel; }
+        set
+        {
+            if (farmLevel != value)
+            {
                 farmLevel = value;
                 RefreshSelfOnly();
             }
         }
     }
 
-    public int PlantLevel {
-        get {
-            return plantLevel;
-        }
-        set {
-            if (plantLevel != value) {
+    public int PlantLevel
+    {
+        get { return plantLevel; }
+        set
+        {
+            if (plantLevel != value)
+            {
                 plantLevel = value;
                 RefreshSelfOnly();
             }
         }
     }
-    
+
     private int urbanLevel, farmLevel, plantLevel;
 
     [SerializeField] HexCell[] neighbors;
@@ -429,42 +443,112 @@ public class HexCell : MonoBehaviour
     {
         get { return hasIncomingRiver ? incomingRiver : outgoingRiver; }
     }
-    
+
     /// <summary>
     /// 判断Cell是否低于水位线
     /// </summary>
-    public bool IsUnderwater {
-        get {
-            return waterLevel > elevation;
-        }
+    public bool IsUnderwater
+    {
+        get { return waterLevel > elevation; }
     }
-    
+
     /// <summary>
     /// 判断河流是否是向高的方向流动
     /// </summary>
     /// <param name="neighbor"></param>
     /// <returns></returns>
-    bool IsValidRiverDestination (HexCell neighbor) {
+    bool IsValidRiverDestination(HexCell neighbor)
+    {
         return neighbor && (
                    elevation >= neighbor.elevation || waterLevel == neighbor.elevation
                );
     }
-    
+
     /// <summary>
     /// 验证格子高度或者水位线发生变化，对此格子的河流进行验证
     /// </summary>
-    void ValidateRivers () {
+    void ValidateRivers()
+    {
         if (
             hasOutgoingRiver &&
             !IsValidRiverDestination(GetNeighbor(outgoingRiver))
-        ) {
+        )
+        {
             RemoveOutgoingRiver();
         }
+
         if (
             hasIncomingRiver &&
             !GetNeighbor(incomingRiver).IsValidRiverDestination(this)
-        ) {
+        )
+        {
             RemoveIncomingRiver();
+        }
+    }
+    
+    void RefreshPosition () {
+        Vector3 position = transform.localPosition;
+        position.y = elevation * HexMetrics.elevationStep;
+        position.y +=
+            (HexMetrics.SampleNoise(position).y * 2f - 1f) *
+            HexMetrics.elevationPerturbStrength;
+        transform.localPosition = position;
+
+        Vector3 uiPosition = uiRect.localPosition;
+        uiPosition.z = -position.y;
+        uiRect.localPosition = uiPosition;
+    }
+    
+    public void Save(BinaryWriter writer)
+    {
+        writer.Write((byte)terrainTypeIndex);
+        writer.Write((byte)elevation);
+        writer.Write((byte)waterLevel);
+        writer.Write((byte)urbanLevel);
+        writer.Write((byte)farmLevel);
+        writer.Write((byte)plantLevel);
+        
+        if (hasIncomingRiver) {
+            writer.Write((byte)(incomingRiver + 128));
+        }
+        else {
+            writer.Write((byte)0);
+        }
+
+        if (hasOutgoingRiver) {
+            writer.Write((byte)(outgoingRiver + 128));
+        }
+        else {
+            writer.Write((byte)0);
+        }
+    }
+
+    public void Load(BinaryReader reader)
+    {
+        terrainTypeIndex = reader.ReadByte();
+        elevation = reader.ReadByte();
+        RefreshPosition();
+        waterLevel = reader.ReadByte();
+        urbanLevel = reader.ReadByte();
+        farmLevel = reader.ReadByte();
+        plantLevel = reader.ReadByte();
+
+        byte riverData = reader.ReadByte();
+        if (riverData >= 128) {
+            hasIncomingRiver = true;
+            incomingRiver = (HexDirection)(riverData - 128);
+        }
+        else {
+            hasIncomingRiver = false;
+        }
+
+        riverData = reader.ReadByte();
+        if (riverData >= 128) {
+            hasOutgoingRiver = true;
+            outgoingRiver = (HexDirection)(riverData - 128);
+        }
+        else {
+            hasOutgoingRiver = false;
         }
     }
 }
