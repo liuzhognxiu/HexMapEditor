@@ -12,23 +12,6 @@ public class HexCell : MonoBehaviour
     int terrainTypeIndex;
 
 
-
-
-    public Color Color
-    {
-        get { return HexMetrics.colors[terrainTypeIndex]; }
-//        set
-//        {
-//            if (color == value)
-//            {
-//                return;
-//            }
-//
-//            color = value;
-//            Refresh();
-//        }
-    }
-
     public int TerrainTypeIndex
     {
         get { return terrainTypeIndex; }

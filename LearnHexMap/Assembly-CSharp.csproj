@@ -81,8 +81,11 @@
     <None Include="Assets\Materials\River.shader" />
     <None Include="Assets\Materials\VertexColors.shader" />
     <None Include="Assets\Materials\Water Shore.shader" />
+    <None Include="Assets\Materials\HexCellData.cginc" />
     <None Include="Assets\Materials\Estuary.shader" />
+    <None Include="Assets\Materials\Terrain\Trerrain.shader" />
     <None Include="Assets\Materials\Road.shader" />
+    <None Include="Assets\Materials\HexMetrics.cginc" />
     <None Include="Assets\Materials\Water.shader" />
     <None Include="Assets\Materials\Water.cginc" />
     <Reference Include="Unity.TextMeshPro.Editor">
