@@ -11,7 +11,7 @@ public class HexMapEditor : MonoBehaviour
     int activeWaterLevel;
     private int activeUrbanLevel, activeFarmLevel, activePlantLevel;
 
-
+    public Material terrainMaterial;
     int brushSize;
 
     int activeTerrainTypeIndex;
@@ -19,7 +19,13 @@ public class HexMapEditor : MonoBehaviour
     bool applyElevation = true;
     bool applyWaterLevel = true;
     bool applyUrbanLevel = true;
+    bool editMode;
     private bool applyFarmLevel, applyPlantLevel;
+
+    /// <summary>
+    /// 一次寻路的行动力
+    /// </summary>
+    public int speed = 24;
 
     enum OptionalToggle
     {
@@ -32,8 +38,32 @@ public class HexMapEditor : MonoBehaviour
 
     bool isDrag;
     HexDirection dragDirection;
-    HexCell previousCell;
+    HexCell previousCell, searchFromCell, searchToCell;
 
+
+    void Awake()
+    {
+        terrainMaterial.DisableKeyword("GRID_ON");
+    }
+
+    public void SetEditMode(bool toggle)
+    {
+        editMode = toggle;
+        hexGrid.ShowUI(!toggle);
+    }
+
+    public void ShowGrid(bool visible)
+    {
+        if (visible)
+        {
+            terrainMaterial.EnableKeyword("GRID_ON");
+        }
+
+        else
+        {
+            terrainMaterial.DisableKeyword("GRID_ON");
+        }
+    }
 
     public void SetTerrainTypeIndex(int index)
     {
@@ -103,10 +133,10 @@ public class HexMapEditor : MonoBehaviour
         roadMode = (OptionalToggle) mode;
     }
 
-    public void ShowUI(bool visible)
-    {
-        hexGrid.ShowUI(visible);
-    }
+//    public void ShowUI(bool visible)
+//    {
+//        hexGrid.ShowUI(visible);
+//    }
 
     public void SetApplyUrbanLevel(float level)
     {
@@ -177,7 +207,34 @@ public class HexMapEditor : MonoBehaviour
                 isDrag = false;
             }
 
-            EditCells(currentCell);
+            if (editMode)
+            {
+                EditCells(currentCell);
+            }
+            else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
+            {
+                if (searchFromCell)
+                {
+                    searchFromCell.DisableHighlight();
+                }
+
+                searchFromCell = currentCell;
+                searchFromCell.EnableHighlight(Color.blue);
+                if (searchToCell)
+                {
+                    hexGrid.FindPath(searchFromCell, searchToCell, speed);
+                }
+            }
+            else if (searchFromCell && searchFromCell != currentCell)
+            {
+                searchToCell = currentCell;
+                hexGrid.FindPath(searchFromCell, searchToCell, speed);
+            }
+            else
+            {
+                hexGrid.FindPath(currentCell, searchFromCell, speed);
+            }
+
             previousCell = currentCell;
         }
         else

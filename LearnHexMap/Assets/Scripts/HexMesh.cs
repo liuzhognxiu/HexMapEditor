@@ -113,6 +113,10 @@ public class HexMesh : MonoBehaviour {
 		uv2s.Add(uv3);
 	}
 
+	/// <summary>
+	/// 添加地形类型，没有地形类型信息，可能导致地图纹理出错
+	/// </summary>
+	/// <param name="types"></param>
 	public void AddTriangleTerrainTypes (Vector3 types) {
 		terrainTypes.Add(types);
 		terrainTypes.Add(types);

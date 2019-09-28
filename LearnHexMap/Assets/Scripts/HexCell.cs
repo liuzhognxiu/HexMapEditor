@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HexCell : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class HexCell : MonoBehaviour
 
     int terrainTypeIndex;
 
+    private int distance;
 
     public int TerrainTypeIndex
     {
@@ -206,11 +208,48 @@ public class HexCell : MonoBehaviour
         }
     }
 
+    public int Distance
+    {
+        get { return distance; }
+        set
+        {
+            distance = value;
+            UpdateDistanceLabel();
+        }
+    }
+
     private int urbanLevel, farmLevel, plantLevel;
+
+    /// <summary>
+    /// 启发式搜索中间值
+    /// </summary>
+    public int SearchHeuristic { get; set; }
+    
+    /// <summary>
+    /// 启发式搜索的优先级
+    /// </summary>
+    public int SearchPriority {
+        get {
+            return distance + SearchHeuristic;
+        }
+    }
+    
+    /// <summary>
+    /// 记录队列中相同优先级的cell
+    /// </summary>
+    public HexCell NextWithSamePriority { get; set; }
 
     [SerializeField] HexCell[] neighbors;
 
     [SerializeField] bool[] roads;
+
+    public HexCell PathFrom { get; set; }
+
+    void UpdateDistanceLabel()
+    {
+        Text label = uiRect.GetComponent<Text>();
+        label.text = distance == int.MaxValue ? "" : distance.ToString();
+    }
 
     public HexCell GetNeighbor(HexDirection direction)
     {
@@ -468,8 +507,9 @@ public class HexCell : MonoBehaviour
             RemoveIncomingRiver();
         }
     }
-    
-    void RefreshPosition () {
+
+    void RefreshPosition()
+    {
         Vector3 position = transform.localPosition;
         position.y = elevation * HexMetrics.elevationStep;
         position.y +=
@@ -481,28 +521,32 @@ public class HexCell : MonoBehaviour
         uiPosition.z = -position.y;
         uiRect.localPosition = uiPosition;
     }
-    
+
     public void Save(BinaryWriter writer)
     {
-        writer.Write((byte)terrainTypeIndex);
-        writer.Write((byte)elevation);
-        writer.Write((byte)waterLevel);
-        writer.Write((byte)urbanLevel);
-        writer.Write((byte)farmLevel);
-        writer.Write((byte)plantLevel);
-        
-        if (hasIncomingRiver) {
-            writer.Write((byte)(incomingRiver + 128));
+        writer.Write((byte) terrainTypeIndex);
+        writer.Write((byte) elevation);
+        writer.Write((byte) waterLevel);
+        writer.Write((byte) urbanLevel);
+        writer.Write((byte) farmLevel);
+        writer.Write((byte) plantLevel);
+
+        if (hasIncomingRiver)
+        {
+            writer.Write((byte) (incomingRiver + 128));
         }
-        else {
-            writer.Write((byte)0);
+        else
+        {
+            writer.Write((byte) 0);
         }
 
-        if (hasOutgoingRiver) {
-            writer.Write((byte)(outgoingRiver + 128));
+        if (hasOutgoingRiver)
+        {
+            writer.Write((byte) (outgoingRiver + 128));
         }
-        else {
-            writer.Write((byte)0);
+        else
+        {
+            writer.Write((byte) 0);
         }
     }
 
@@ -517,21 +561,39 @@ public class HexCell : MonoBehaviour
         plantLevel = reader.ReadByte();
 
         byte riverData = reader.ReadByte();
-        if (riverData >= 128) {
+        if (riverData >= 128)
+        {
             hasIncomingRiver = true;
-            incomingRiver = (HexDirection)(riverData - 128);
+            incomingRiver = (HexDirection) (riverData - 128);
         }
-        else {
+        else
+        {
             hasIncomingRiver = false;
         }
 
         riverData = reader.ReadByte();
-        if (riverData >= 128) {
+        if (riverData >= 128)
+        {
             hasOutgoingRiver = true;
-            outgoingRiver = (HexDirection)(riverData - 128);
+            outgoingRiver = (HexDirection) (riverData - 128);
         }
-        else {
+        else
+        {
             hasOutgoingRiver = false;
         }
+    }
+
+
+    public void DisableHighlight()
+    {
+        Image highlight = uiRect.GetChild(0).GetComponent<Image>();
+        highlight.enabled = false;
+    }
+
+    public void EnableHighlight(Color color)
+    {
+        Image highlight = uiRect.GetChild(0).GetComponent<Image>();
+        highlight.color = color;
+        highlight.enabled = true;
     }
 }

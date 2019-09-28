@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\EdgeVertices.cs" />
     <Compile Include="Assets\Scripts\HexCell.cs" />
+    <Compile Include="Assets\Scripts\HexCellPriorityQueue.cs" />
     <Compile Include="Assets\Scripts\HexCoordinates.cs" />
     <Compile Include="Assets\Scripts\HexDirection.cs" />
     <Compile Include="Assets\Scripts\HexEdgeType.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\Scripts\SaveLoadMenu.cs" />
     <None Include="Assets\Materials\River.shader" />
     <None Include="Assets\Materials\VertexColors.shader" />
+    <None Include="Assets\Materials\Highlight.shader" />
     <None Include="Assets\Materials\Water Shore.shader" />
     <None Include="Assets\Materials\HexCellData.cginc" />
     <None Include="Assets\Materials\Estuary.shader" />
