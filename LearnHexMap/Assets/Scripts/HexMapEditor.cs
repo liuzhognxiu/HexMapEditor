@@ -77,7 +77,7 @@ public class HexMapEditor : MonoBehaviour
 
     public void SetFarmLevel(float level)
     {
-        activeFarmLevel = (int) level;
+        activeFarmLevel = (int)level;
     }
 
     public void SetApplyPlantLevel(bool toggle)
@@ -87,7 +87,7 @@ public class HexMapEditor : MonoBehaviour
 
     public void SetPlantLevel(float level)
     {
-        activePlantLevel = (int) level;
+        activePlantLevel = (int)level;
     }
 
 
@@ -98,7 +98,7 @@ public class HexMapEditor : MonoBehaviour
 
     public void SetElevation(float elevation)
     {
-        activeElevation = (int) elevation;
+        activeElevation = (int)elevation;
     }
 
     public void SetApplyWaterLevel(bool toggle)
@@ -115,32 +115,32 @@ public class HexMapEditor : MonoBehaviour
 
     public void SetWaterLevel(float level)
     {
-        activeWaterLevel = (int) level;
+        activeWaterLevel = (int)level;
     }
 
     public void SetBrushSize(float size)
     {
-        brushSize = (int) size;
+        brushSize = (int)size;
     }
 
     public void SetRiverMode(int mode)
     {
-        riverMode = (OptionalToggle) mode;
+        riverMode = (OptionalToggle)mode;
     }
 
     public void SetRoadMode(int mode)
     {
-        roadMode = (OptionalToggle) mode;
+        roadMode = (OptionalToggle)mode;
     }
 
-//    public void ShowUI(bool visible)
-//    {
-//        hexGrid.ShowUI(visible);
-//    }
+    //    public void ShowUI(bool visible)
+    //    {
+    //        hexGrid.ShowUI(visible);
+    //    }
 
     public void SetApplyUrbanLevel(float level)
     {
-        activeUrbanLevel = (int) level;
+        activeUrbanLevel = (int)level;
     }
 
     public void Save()
@@ -213,9 +213,12 @@ public class HexMapEditor : MonoBehaviour
             }
             else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
             {
-                if (searchFromCell)
+                if (searchFromCell != currentCell)
                 {
-                    searchFromCell.DisableHighlight();
+                    if (searchFromCell)
+                    {
+                        searchFromCell.DisableHighlight();
+                    }
                 }
 
                 searchFromCell = currentCell;
@@ -227,8 +230,11 @@ public class HexMapEditor : MonoBehaviour
             }
             else if (searchFromCell && searchFromCell != currentCell)
             {
-                searchToCell = currentCell;
-                hexGrid.FindPath(searchFromCell, searchToCell, speed);
+                if (searchToCell != currentCell)
+                {
+                    searchToCell = currentCell;
+                    hexGrid.FindPath(searchFromCell, searchToCell, speed);
+                }
             }
             else
             {

@@ -44,7 +44,7 @@ public class HexCell : MonoBehaviour
             //检查方向上道路，高度差过大的时候移除道路
             for (int i = 0; i < roads.Length; i++)
             {
-                if (roads[i] && GetElevationDifference((HexDirection) i) > 1)
+                if (roads[i] && GetElevationDifference((HexDirection)i) > 1)
                 {
                     SetRoad(i, false);
                 }
@@ -214,7 +214,7 @@ public class HexCell : MonoBehaviour
         set
         {
             distance = value;
-            UpdateDistanceLabel();
+            //            UpdateDistanceLabel();
         }
     }
 
@@ -224,16 +224,23 @@ public class HexCell : MonoBehaviour
     /// 启发式搜索中间值
     /// </summary>
     public int SearchHeuristic { get; set; }
-    
+
     /// <summary>
     /// 启发式搜索的优先级
     /// </summary>
-    public int SearchPriority {
-        get {
+    public int SearchPriority
+    {
+        get
+        {
             return distance + SearchHeuristic;
         }
     }
-    
+
+    /// <summary>
+    /// 搜索的阶段
+    /// </summary>
+    public int SearchPhase { get; set; }
+
     /// <summary>
     /// 记录队列中相同优先级的cell
     /// </summary>
@@ -245,27 +252,33 @@ public class HexCell : MonoBehaviour
 
     public HexCell PathFrom { get; set; }
 
-    void UpdateDistanceLabel()
+    //    void UpdateDistanceLabel()
+    //    {
+    //        Text label = uiRect.GetComponent<Text>();
+    //        label.text = distance == int.MaxValue ? "" : distance.ToString();
+    //    }
+
+    public void SetLabel(string text)
     {
         Text label = uiRect.GetComponent<Text>();
-        label.text = distance == int.MaxValue ? "" : distance.ToString();
+        label.text = text;
     }
 
     public HexCell GetNeighbor(HexDirection direction)
     {
-        return neighbors[(int) direction];
+        return neighbors[(int)direction];
     }
 
     public void SetNeighbor(HexDirection direction, HexCell cell)
     {
-        neighbors[(int) direction] = cell;
-        cell.neighbors[(int) direction.Opposite()] = this;
+        neighbors[(int)direction] = cell;
+        cell.neighbors[(int)direction.Opposite()] = this;
     }
 
     public HexEdgeType GetEdgeType(HexDirection direction)
     {
         return HexMetrics.GetEdgeType(
-            elevation, neighbors[(int) direction].elevation
+            elevation, neighbors[(int)direction].elevation
         );
     }
 
@@ -380,13 +393,13 @@ public class HexCell : MonoBehaviour
 
         hasOutgoingRiver = true;
         outgoingRiver = direction;
-//      RefreshSelfOnly();
+        //      RefreshSelfOnly();
 
         neighbor.RemoveIncomingRiver();
         neighbor.hasIncomingRiver = true;
         neighbor.incomingRiver = direction.Opposite();
-//      neighbor.RefreshSelfOnly();
-        SetRoad((int) direction, false);
+        //      neighbor.RefreshSelfOnly();
+        SetRoad((int)direction, false);
     }
 
     /// <summary>
@@ -396,7 +409,7 @@ public class HexCell : MonoBehaviour
     /// <returns></returns>
     public bool HasRoadThroughEdge(HexDirection direction)
     {
-        return roads[(int) direction];
+        return roads[(int)direction];
     }
 
     public bool HasRoads
@@ -436,11 +449,11 @@ public class HexCell : MonoBehaviour
     public void AddRoad(HexDirection direction)
     {
         if (
-            !roads[(int) direction] && !HasRiverThroughEdge(direction) &&
+            !roads[(int)direction] && !HasRiverThroughEdge(direction) &&
             GetElevationDifference(direction) <= 1
         )
         {
-            SetRoad((int) direction, true);
+            SetRoad((int)direction, true);
         }
     }
 
@@ -453,7 +466,7 @@ public class HexCell : MonoBehaviour
     void SetRoad(int index, bool state)
     {
         roads[index] = state;
-        neighbors[index].roads[(int) ((HexDirection) index).Opposite()] = state;
+        neighbors[index].roads[(int)((HexDirection)index).Opposite()] = state;
         neighbors[index].RefreshSelfOnly();
         RefreshSelfOnly();
     }
@@ -524,29 +537,29 @@ public class HexCell : MonoBehaviour
 
     public void Save(BinaryWriter writer)
     {
-        writer.Write((byte) terrainTypeIndex);
-        writer.Write((byte) elevation);
-        writer.Write((byte) waterLevel);
-        writer.Write((byte) urbanLevel);
-        writer.Write((byte) farmLevel);
-        writer.Write((byte) plantLevel);
+        writer.Write((byte)terrainTypeIndex);
+        writer.Write((byte)elevation);
+        writer.Write((byte)waterLevel);
+        writer.Write((byte)urbanLevel);
+        writer.Write((byte)farmLevel);
+        writer.Write((byte)plantLevel);
 
         if (hasIncomingRiver)
         {
-            writer.Write((byte) (incomingRiver + 128));
+            writer.Write((byte)(incomingRiver + 128));
         }
         else
         {
-            writer.Write((byte) 0);
+            writer.Write((byte)0);
         }
 
         if (hasOutgoingRiver)
         {
-            writer.Write((byte) (outgoingRiver + 128));
+            writer.Write((byte)(outgoingRiver + 128));
         }
         else
         {
-            writer.Write((byte) 0);
+            writer.Write((byte)0);
         }
     }
 
@@ -564,7 +577,7 @@ public class HexCell : MonoBehaviour
         if (riverData >= 128)
         {
             hasIncomingRiver = true;
-            incomingRiver = (HexDirection) (riverData - 128);
+            incomingRiver = (HexDirection)(riverData - 128);
         }
         else
         {
@@ -575,7 +588,7 @@ public class HexCell : MonoBehaviour
         if (riverData >= 128)
         {
             hasOutgoingRiver = true;
-            outgoingRiver = (HexDirection) (riverData - 128);
+            outgoingRiver = (HexDirection)(riverData - 128);
         }
         else
         {

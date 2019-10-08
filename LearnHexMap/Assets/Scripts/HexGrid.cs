@@ -20,17 +20,29 @@ public class HexGrid : MonoBehaviour
     HexCell[] cells;
     public int seed;
 
-//    public Color[] colors;
+    //    public Color[] colors;
 
     public int cellCountX = 20, cellCountZ = 15;
 
     HexCellPriorityQueue searchFrontier;
 
+    /// <summary>
+    /// 搜索边境
+    /// </summary>
+    int searchFrontierPhase;
+
+    /// <summary>
+    /// 当前已有路径的from和to
+    /// </summary>
+    HexCell currentPathFrom, currentPathTo;
+
+    bool currentPathExists;
+
     void Awake()
     {
         HexMetrics.noiseSource = noiseSource;
         HexMetrics.InitializeHashGrid(seed);
-//        HexMetrics.colors = colors;
+        //        HexMetrics.colors = colors;
 
         CreateMap(cellCountX, cellCountZ);
     }
@@ -46,6 +58,7 @@ public class HexGrid : MonoBehaviour
             return false;
         }
 
+
         if (chunks != null)
         {
             for (int i = 0; i < chunks.Length; i++)
@@ -53,7 +66,7 @@ public class HexGrid : MonoBehaviour
                 Destroy(chunks[i].gameObject);
             }
         }
-
+        ClearPath();
         cellCountX = x;
         cellCountZ = z;
         chunkCountX = cellCountX / HexMetrics.chunkSizeX;
@@ -75,7 +88,7 @@ public class HexGrid : MonoBehaviour
 
     public void Load(BinaryReader reader, int header)
     {
-        StopAllCoroutines();
+        ClearPath();
         int x = 20, z = 15;
         if (header >= 1)
         {
@@ -133,7 +146,7 @@ public class HexGrid : MonoBehaviour
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
-//            HexMetrics.colors = colors;
+            //            HexMetrics.colors = colors;
         }
     }
 
@@ -181,7 +194,7 @@ public class HexGrid : MonoBehaviour
         HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
         cell.transform.localPosition = position;
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-//		cell.Color = defaultColor;
+        //		cell.Color = defaultColor;
 
         if (x > 0)
         {
@@ -213,7 +226,7 @@ public class HexGrid : MonoBehaviour
             new Vector2(position.x, position.z);
         //label.text = cell.coordinates.ToStringOnSeparateLines();
         cell.uiRect = label.rectTransform;
-
+        cell.DisableHighlight();
         cell.Elevation = 0;
         AddCellToChunk(x, z, cell);
     }
@@ -240,8 +253,67 @@ public class HexGrid : MonoBehaviour
     /// <param name="speed">移动的速度（类似行动力）一次能走多少个cell</param>
     public void FindPath(HexCell fromCell, HexCell toCell, int speed)
     {
-        StopAllCoroutines();
-        StartCoroutine(Search(fromCell, toCell, speed));
+        //        StopAllCoroutines();
+        //        StartCoroutine(Search(fromCell, toCell, speed));
+        ClearPath();
+        //检测寻路所消耗的时间
+        //        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        //        sw.Start();
+        currentPathFrom = fromCell;
+        currentPathTo = toCell;
+        currentPathExists = Search(fromCell, toCell, speed);
+        //        sw.Stop();
+        //        Debug.Log(sw.ElapsedMilliseconds);
+        if (currentPathExists)
+        {
+            ShowPath(speed);
+        }
+    }
+
+    /// <summary>
+    /// 寻路算法结束之后，显示路径
+    /// </summary>
+    /// <param name="speed"></param>
+    void ShowPath(int speed)
+    {
+        if (currentPathExists)
+        {
+            HexCell current = currentPathTo;
+            while (current != currentPathFrom)
+            {
+                int turn = current.Distance / speed;
+                current.SetLabel(turn.ToString());
+                current.EnableHighlight(Color.white);
+                current = current.PathFrom;
+            }
+        }
+        currentPathFrom.EnableHighlight(Color.blue);
+        currentPathTo.EnableHighlight(Color.red);
+    }
+
+    /// <summary>
+    /// 清除寻路的路径点
+    /// </summary>
+    void ClearPath()
+    {
+        if (currentPathExists)
+        {
+            HexCell current = currentPathTo;
+            while (current != currentPathFrom)
+            {
+                current.SetLabel(null);
+                current.DisableHighlight();
+                current = current.PathFrom;
+            }
+            current.DisableHighlight();
+            currentPathExists = false;
+        }
+        else if (currentPathFrom)
+        {
+            currentPathFrom.DisableHighlight();
+            currentPathTo.DisableHighlight();
+        }
+        currentPathFrom = currentPathTo = null;
     }
 
     /// <summary>
@@ -250,8 +322,10 @@ public class HexGrid : MonoBehaviour
     /// <param name="fromCell"></param>
     /// <param name="toCell"></param>
     /// <returns></returns>
-    IEnumerator Search(HexCell fromCell, HexCell toCell, int speed)
+    bool Search(HexCell fromCell, HexCell toCell, int speed)
     {
+
+        searchFrontierPhase += 2;
         if (searchFrontier == null)
         {
             searchFrontier = new HexCellPriorityQueue();
@@ -261,16 +335,18 @@ public class HexGrid : MonoBehaviour
             searchFrontier.Clear();
         }
 
-        for (int i = 0; i < cells.Length; i++)
-        {
-            cells[i].Distance = int.MaxValue;
-            cells[i].DisableHighlight();
-        }
+        //        for (int i = 0; i < cells.Length; i++)
+        //        {
+        //            //cells[i].Distance = int.MaxValue;
+        //            cells[i].SetLabel(null);
+        //            cells[i].DisableHighlight();
+        //        }
+        //
+        //        fromCell.EnableHighlight(Color.blue);
 
-        fromCell.EnableHighlight(Color.blue);
-        toCell.EnableHighlight(Color.red);
+        fromCell.SearchPhase = searchFrontierPhase;
 
-        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+        //toCell.EnableHighlight(Color.red);
 
         fromCell.Distance = 0;
 
@@ -278,31 +354,34 @@ public class HexGrid : MonoBehaviour
 
         while (searchFrontier.Count > 0)
         {
-            yield return delay;
-
             HexCell current = searchFrontier.Dequeue();
-
+            //每当一个cell被检索过之后，格子的搜索阶段+1
+            current.SearchPhase += 1;
             ///搜索到目标位置不再搜索
             if (current == toCell)
             {
-                current = current.PathFrom;
-                while (current != fromCell)
-                {
-                    current.EnableHighlight(Color.white);
-                    current = current.PathFrom;
-                }
-
-                break;
+                return true;
+                //下边这些可以在搜索完成之后，另外一个方法调用
+                //                while (current != fromCell)
+                //                {
+                //                    int turn = current.Distance / speed;
+                //                    current.SetLabel(turn.ToString());
+                //                    current.EnableHighlight(Color.white);
+                //                    current = current.PathFrom;
+                //                }
+                //                toCell.EnableHighlight(Color.red);
+                //                break;
             }
 
             //当前的回合数（逻辑强相关）
             int currentTurn = current.Distance / speed;
-            
+
             for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
                 HexCell neighbor = current.GetNeighbor(d);
 
-                if (neighbor == null || neighbor.Distance != int.MaxValue)
+                //这里可以根据搜索是否完成，避免重复计算
+                if (neighbor == null || neighbor.SearchPhase > searchFrontierPhase)
                 {
                     continue;
                 }
@@ -319,27 +398,42 @@ public class HexGrid : MonoBehaviour
                     continue;
                 }
 
-                int distance = current.Distance;
+                //int distance = current.Distance;
+                //移动所消耗的行动力
+                int moveCost;
 
                 //如果是有道路的情况距离为1
                 if (current.HasRoadThroughEdge(d))
                 {
-                    distance += 1;
+                    moveCost = 1;
                 }
                 else
                 {
                     //如果不是平摊的链接，距离为10
-                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
+                    moveCost = edgeType == HexEdgeType.Flat ? 5 : 10;
                     //加入场景内环境的因素导致距离的问题（游戏逻辑强相关）
-                    distance += neighbor.UrbanLevel + neighbor.FarmLevel +
+                    moveCost += neighbor.UrbanLevel + neighbor.FarmLevel +
                                 neighbor.PlantLevel;
-                
-                    int turn = distance / speed;
                 }
 
-                if (neighbor.Distance == int.MaxValue)
+                int distance = current.Distance + moveCost;
+
+                //需要行动多少个回合
+                int turn = distance / speed;
+
+                if (turn > currentTurn)
+                {
+                    distance = turn * speed + moveCost;
+                }
+
+                //如果没有被检测过的邻居添加到队里中
+                //if (neighbor.Distance == int.MaxValue) {
+                //如果是搜索阶段小于当前的搜索阶段,这样搜索可以在初始化的时候不再初始化每个cell的初始距离
+                if (neighbor.SearchPhase < searchFrontierPhase)
                 {
                     neighbor.Distance = distance;
+                    neighbor.SearchPhase = searchFrontierPhase;
+                    //                    neighbor.SetLabel(turn.ToString());
                     neighbor.PathFrom = current;
                     neighbor.SearchHeuristic =
                         neighbor.coordinates.DistanceTo(toCell.coordinates);
@@ -349,131 +443,136 @@ public class HexGrid : MonoBehaviour
                 {
                     int oldPriority = neighbor.SearchPriority;
                     neighbor.Distance = distance;
+                    //                    neighbor.SetLabel(turn.ToString());
                     neighbor.PathFrom = current;
                     searchFrontier.Change(neighbor, oldPriority);
                 }
+
             }
+
         }
+
+        return false;
     }
 
     #endregion
 
     #region 启发式搜索
 
-//     public void FindPath(HexCell fromCell, HexCell toCell)
-//    {
-//        StopAllCoroutines();
-//        StartCoroutine(Search(fromCell, toCell));
-//    }
-//
-//    /// <summary>
-//    /// 启发式搜索算法
-//    /// </summary>
-//    /// <param name="fromCell"></param>
-//    /// <param name="toCell"></param>
-//    /// <returns></returns>
-//    IEnumerator Search(HexCell fromCell, HexCell toCell)
-//    {
-//        for (int i = 0; i < cells.Length; i++)
-//        {
-//            cells[i].Distance = int.MaxValue;
-//            cells[i].DisableHighlight();
-//        }
-//
-//        fromCell.EnableHighlight(Color.blue);
-//        toCell.EnableHighlight(Color.red);
-//
-//        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
-//
-//        List<HexCell> frontier = new List<HexCell>();
-//
-//        fromCell.Distance = 0;
-//
-//        frontier.Add(fromCell);
-//
-//        while (frontier.Count > 0)
-//        {
-//            yield return delay;
-//
-//            HexCell current = frontier[0];
-//            frontier.RemoveAt(0);
-//
-//            ///搜索到目标位置不再搜索
-//            if (current == toCell)
-//            {
-//                current = current.PathFrom;
-//                while (current != fromCell)
-//                {
-//                    current.EnableHighlight(Color.white);
-//                    current = current.PathFrom;
-//                }
-//
-//                break;
-//            }
-//
-//            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
-//            {
-//                HexCell neighbor = current.GetNeighbor(d);
-//
-//                if (neighbor == null || neighbor.Distance != int.MaxValue)
-//                {
-//                    continue;
-//                }
-//
-//                if (neighbor.IsUnderwater)
-//                {
-//                    continue;
-//                }
-//
-//                //取到当前链接类型
-//                HexEdgeType edgeType = current.GetEdgeType(neighbor);
-//                if (current.GetEdgeType(neighbor) == HexEdgeType.Cliff)
-//                {
-//                    continue;
-//                }
-//
-//                int distance = current.Distance;
-//
-//                //如果是有道路的情况距离为1
-//                if (current.HasRoadThroughEdge(d))
-//                {
-//                    distance += 1;
-//                }
-//                else
-//                {
-//                    //如果不是平摊的链接，距离为10
-//                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
-//                    //加入场景内环境的因素导致距离的问题（游戏逻辑强相关）
-//                    distance += neighbor.UrbanLevel + neighbor.FarmLevel +
-//                                neighbor.PlantLevel;
-//                }
-//
-//                if (neighbor.Distance == int.MaxValue)
-//                {
-//                    neighbor.Distance = distance;
-//                    neighbor.PathFrom = current;
-//                    //当前启发式搜索的值
-//                    neighbor.SearchHeuristic =
-//                        neighbor.coordinates.DistanceTo(toCell.coordinates);
-//                    frontier.Add(neighbor);
-//                }
-//                else if (distance < neighbor.Distance)
-//                {
-//                    neighbor.Distance = distance;
-//                    neighbor.PathFrom = current;
-//                }
-//                
-//                neighbor.Distance = distance;
-//                frontier.Add(neighbor);
-//                frontier.Sort(CompareDistances);
-//            }
-//        }
-//    }
-//
-//    static int CompareDistances(HexCell x, HexCell y)
-//    {
-//        return x.SearchPriority.CompareTo(y.SearchPriority);
-//    }
+    //     public void FindPath(HexCell fromCell, HexCell toCell)
+    //    {
+    //        StopAllCoroutines();
+    //        StartCoroutine(Search(fromCell, toCell));
+    //    }
+    //
+    //    /// <summary>
+    //    /// 启发式搜索算法
+    //    /// </summary>
+    //    /// <param name="fromCell"></param>
+    //    /// <param name="toCell"></param>
+    //    /// <returns></returns>
+    //    IEnumerator Search(HexCell fromCell, HexCell toCell)
+    //    {
+    //        for (int i = 0; i < cells.Length; i++)
+    //        {
+    //            cells[i].Distance = int.MaxValue;
+    //            cells[i].DisableHighlight();
+    //        }
+    //
+    //        fromCell.EnableHighlight(Color.blue);
+    //        toCell.EnableHighlight(Color.red);
+    //
+    //        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+    //
+    //        List<HexCell> frontier = new List<HexCell>();
+    //
+    //        fromCell.Distance = 0;
+    //
+    //        frontier.Add(fromCell);
+    //
+    //        while (frontier.Count > 0)
+    //        {
+    //            yield return delay;
+    //
+    //            HexCell current = frontier[0];
+    //            frontier.RemoveAt(0);
+    //
+    //            ///搜索到目标位置不再搜索
+    //            if (current == toCell)
+    //            {
+    //                current = current.PathFrom;
+    //                while (current != fromCell)
+    //                {
+    //                    current.EnableHighlight(Color.white);
+    //                    current = current.PathFrom;
+    //                }
+    //
+    //                break;
+    //            }
+    //
+    //            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+    //            {
+    //                HexCell neighbor = current.GetNeighbor(d);
+    //
+    //                if (neighbor == null || neighbor.Distance != int.MaxValue)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                if (neighbor.IsUnderwater)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                //取到当前链接类型
+    //                HexEdgeType edgeType = current.GetEdgeType(neighbor);
+    //                if (current.GetEdgeType(neighbor) == HexEdgeType.Cliff)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                int distance = current.Distance;
+    //
+    //                //如果是有道路的情况距离为1
+    //                if (current.HasRoadThroughEdge(d))
+    //                {
+    //                    distance += 1;
+    //                }
+    //                else
+    //                {
+    //                    //如果不是平摊的链接，距离为10
+    //                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
+    //                    //加入场景内环境的因素导致距离的问题（游戏逻辑强相关）
+    //                    distance += neighbor.UrbanLevel + neighbor.FarmLevel +
+    //                                neighbor.PlantLevel;
+    //                }
+    //
+    //                if (neighbor.Distance == int.MaxValue)
+    //                {
+    //                    neighbor.Distance = distance;
+    //                    neighbor.PathFrom = current;
+    //                    //当前启发式搜索的值
+    //                    neighbor.SearchHeuristic =
+    //                        neighbor.coordinates.DistanceTo(toCell.coordinates);
+    //                    frontier.Add(neighbor);
+    //                }
+    //                else if (distance < neighbor.Distance)
+    //                {
+    //                    neighbor.Distance = distance;
+    //                    neighbor.PathFrom = current;
+    //                }
+    //                
+    //                neighbor.Distance = distance;
+    //                frontier.Add(neighbor);
+    //                frontier.Sort(CompareDistances);
+    //            }
+    //        }
+    //    }
+    //
+    //    static int CompareDistances(HexCell x, HexCell y)
+    //    {
+    //        return x.SearchPriority.CompareTo(y.SearchPriority);
+    //    }
 
     #endregion
 
@@ -484,87 +583,87 @@ public class HexGrid : MonoBehaviour
     /// </summary>
     /// <param name="cell"></param>
     /// <returns></returns>
-//    IEnumerator Search(HexCell cell)
-//    {
-//        for (int i = 0; i < cells.Length; i++)
-//        {
-//            cells[i].Distance = int.MaxValue;
-//        }
-//
-//        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
-//
-//        List<HexCell> frontier = new List<HexCell>();
-//
-//        cell.Distance = 0;
-//
-//        frontier.Add(cell);
-//
-//        while (frontier.Count > 0)
-//        {
-//            yield return delay;
-//
-//            HexCell current = frontier[0];
-//            frontier.RemoveAt(0);
-//            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
-//            {
-//                HexCell neighbor = current.GetNeighbor(d);
-//
-//                if (neighbor == null || neighbor.Distance != int.MaxValue)
-//                {
-//                    continue;
-//                }
-//
-//                if (neighbor.IsUnderwater)
-//                {
-//                    continue;
-//                }
-//
-//                //取到当前链接类型
-//                HexEdgeType edgeType = current.GetEdgeType(neighbor);
-//                if (current.GetEdgeType(neighbor) == HexEdgeType.Cliff)
-//                {
-//                    continue;
-//                }
-//
-//                int distance = current.Distance;
-//
-//                //如果是有道路的情况距离为1
-//                if (current.HasRoadThroughEdge(d))
-//                {
-//                    distance += 1;
-//                }
-//                else
-//                {
-//                    //如果不是平摊的链接，距离为10
-//                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
-//                    //加入场景内环境的因素导致距离的问题（游戏逻辑强相关）
-//                    distance += neighbor.UrbanLevel + neighbor.FarmLevel +
-//                                neighbor.PlantLevel;
-//                }
-//
-//                if (neighbor.Distance == int.MaxValue)
-//                {
-//                    neighbor.Distance = distance;
-//                    frontier.Add(neighbor);
-//                }
-//                else if (distance < neighbor.Distance)
-//                {
-//                    neighbor.Distance = distance;
-//                }
-//
-//                neighbor.Distance = distance;
-//                frontier.Add(neighbor);
-//                frontier.Sort(CompareDistances);
-//            }
-//        }
-//    }
+    //    IEnumerator Search(HexCell cell)
+    //    {
+    //        for (int i = 0; i < cells.Length; i++)
+    //        {
+    //            cells[i].Distance = int.MaxValue;
+    //        }
+    //
+    //        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+    //
+    //        List<HexCell> frontier = new List<HexCell>();
+    //
+    //        cell.Distance = 0;
+    //
+    //        frontier.Add(cell);
+    //
+    //        while (frontier.Count > 0)
+    //        {
+    //            yield return delay;
+    //
+    //            HexCell current = frontier[0];
+    //            frontier.RemoveAt(0);
+    //            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+    //            {
+    //                HexCell neighbor = current.GetNeighbor(d);
+    //
+    //                if (neighbor == null || neighbor.Distance != int.MaxValue)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                if (neighbor.IsUnderwater)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                //取到当前链接类型
+    //                HexEdgeType edgeType = current.GetEdgeType(neighbor);
+    //                if (current.GetEdgeType(neighbor) == HexEdgeType.Cliff)
+    //                {
+    //                    continue;
+    //                }
+    //
+    //                int distance = current.Distance;
+    //
+    //                //如果是有道路的情况距离为1
+    //                if (current.HasRoadThroughEdge(d))
+    //                {
+    //                    distance += 1;
+    //                }
+    //                else
+    //                {
+    //                    //如果不是平摊的链接，距离为10
+    //                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
+    //                    //加入场景内环境的因素导致距离的问题（游戏逻辑强相关）
+    //                    distance += neighbor.UrbanLevel + neighbor.FarmLevel +
+    //                                neighbor.PlantLevel;
+    //                }
+    //
+    //                if (neighbor.Distance == int.MaxValue)
+    //                {
+    //                    neighbor.Distance = distance;
+    //                    frontier.Add(neighbor);
+    //                }
+    //                else if (distance < neighbor.Distance)
+    //                {
+    //                    neighbor.Distance = distance;
+    //                }
+    //
+    //                neighbor.Distance = distance;
+    //                frontier.Add(neighbor);
+    //                frontier.Sort(CompareDistances);
+    //            }
+    //        }
+    //    }
 
 
-//    static int CompareDistances(HexCell x, HexCell y)
-//    {
-//        
-//        return x.Distance.CompareTo(y.Distance);
-//    }
+    //    static int CompareDistances(HexCell x, HexCell y)
+    //    {
+    //        
+    //        return x.Distance.CompareTo(y.Distance);
+    //    }
 
     #endregion
 }
