@@ -10,6 +10,12 @@ public class HexCell : MonoBehaviour
 
     public HexGridChunk chunk;
 
+
+    /// <summary>
+    /// Cell上的单位
+    /// </summary>
+    public HexUnit hexUnit;
+
     int terrainTypeIndex;
 
     private int distance;
@@ -294,6 +300,10 @@ public class HexCell : MonoBehaviour
         if (chunk)
         {
             chunk.Refresh();
+            if (hexUnit)
+            {
+                hexUnit.ValidateLocation();
+            }
             for (int i = 0; i < neighbors.Length; i++)
             {
                 HexCell neighbor = neighbors[i];

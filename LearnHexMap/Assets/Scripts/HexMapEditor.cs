@@ -7,6 +7,8 @@ public class HexMapEditor : MonoBehaviour
 {
     public HexGrid hexGrid;
 
+    public HexUnit unitPrefab;
+
     int activeElevation;
     int activeWaterLevel;
     private int activeUrbanLevel, activeFarmLevel, activePlantLevel;
@@ -44,12 +46,14 @@ public class HexMapEditor : MonoBehaviour
     void Awake()
     {
         terrainMaterial.DisableKeyword("GRID_ON");
+        SetEditMode(false);
     }
 
     public void SetEditMode(bool toggle)
     {
-        editMode = toggle;
-        hexGrid.ShowUI(!toggle);
+        // editMode = toggle;
+        // hexGrid.ShowUI(!toggle);
+        enabled = toggle;
     }
 
     public void ShowGrid(bool visible)
@@ -178,26 +182,27 @@ public class HexMapEditor : MonoBehaviour
 
     void Update()
     {
-        if (
-            Input.GetMouseButton(0) &&
-            !EventSystem.current.IsPointerOverGameObject()
-        )
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            HandleInput();
+            if (Input.GetMouseButton(0))
+            {
+                HandleInput();
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                CreateUnit();
+                return;
+            }
         }
-        else
-        {
-            previousCell = null;
-        }
+        previousCell = null;
     }
 
     void HandleInput()
     {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit))
+        HexCell currentCell = GetCellUnderCursor();
+        if (currentCell)
         {
-            HexCell currentCell = hexGrid.GetCell(hit.point);
             if (previousCell && previousCell != currentCell)
             {
                 ValidateDrag(currentCell);
@@ -206,40 +211,40 @@ public class HexMapEditor : MonoBehaviour
             {
                 isDrag = false;
             }
-
-            if (editMode)
-            {
+            //
+            // if (editMode)
+            // {
                 EditCells(currentCell);
-            }
-            else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
-            {
-                if (searchFromCell != currentCell)
-                {
-                    if (searchFromCell)
-                    {
-                        searchFromCell.DisableHighlight();
-                    }
-                }
-
-                searchFromCell = currentCell;
-                searchFromCell.EnableHighlight(Color.blue);
-                if (searchToCell)
-                {
-                    hexGrid.FindPath(searchFromCell, searchToCell, speed);
-                }
-            }
-            else if (searchFromCell && searchFromCell != currentCell)
-            {
-                if (searchToCell != currentCell)
-                {
-                    searchToCell = currentCell;
-                    hexGrid.FindPath(searchFromCell, searchToCell, speed);
-                }
-            }
-            else
-            {
-                hexGrid.FindPath(currentCell, searchFromCell, speed);
-            }
+            // }
+            // else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
+            // {
+            //     if (searchFromCell != currentCell)
+            //     {
+            //         if (searchFromCell)
+            //         {
+            //             searchFromCell.DisableHighlight();
+            //         }
+            //     }
+            //
+            //     searchFromCell = currentCell;
+            //     searchFromCell.EnableHighlight(Color.blue);
+            //     if (searchToCell)
+            //     {
+            //         hexGrid.FindPath(searchFromCell, searchToCell, speed);
+            //     }
+            // }
+            // else if (searchFromCell && searchFromCell != currentCell)
+            // {
+            //     if (searchToCell != currentCell)
+            //     {
+            //         searchToCell = currentCell;
+            //         hexGrid.FindPath(searchFromCell, searchToCell, speed);
+            //     }
+            // }
+            // else
+            // {
+            //     hexGrid.FindPath(currentCell, searchFromCell, speed);
+            // }
 
             previousCell = currentCell;
         }
@@ -248,6 +253,55 @@ public class HexMapEditor : MonoBehaviour
             previousCell = null;
         }
     }
+
+    /// <summary>
+    /// 获取点击到的Cell
+    /// </summary>
+    /// <returns></returns>
+    HexCell GetCellUnderCursor()
+    {
+        // Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // RaycastHit hit;
+        // if (Physics.Raycast(inputRay, out hit))
+        // {
+        //     return hexGrid.GetCell(hit.point);
+        // }
+        return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
+    }
+
+    /// <summary>
+    /// 根据点击的Cell生成对应的单位
+    /// </summary>
+    void CreateUnit()
+    {
+        HexCell cell = GetCellUnderCursor();
+        if (cell && !cell.hexUnit)
+        {
+            // HexUnit unit = Instantiate(hexUnit);
+            // unit.transform.SetParent(hexGrid.transform, false);
+            // unit.Location = cell;
+            // //开始创建为随机方向
+            // unit.Orientation = Random.Range(0f, 360f);
+            Debug.Log("!!!!!!!!!!!1");
+            hexGrid.AddUnit(
+                Instantiate(unitPrefab), cell, Random.Range(0f, 360f)
+            );
+        }
+    }
+
+    /// <summary>
+    /// 销毁单位
+    /// </summary>
+    void DestroyUnit()
+    {
+        HexCell cell = GetCellUnderCursor();
+        if (cell && cell.hexUnit)
+        {
+            // Destroy(cell.hexUnit.gameObject);
+            hexGrid.RemoveUnit(cell.hexUnit);
+        }
+    }
+
 
     void ValidateDrag(HexCell currentCell)
     {

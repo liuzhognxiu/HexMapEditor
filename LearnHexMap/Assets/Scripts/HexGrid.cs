@@ -20,6 +20,9 @@ public class HexGrid : MonoBehaviour
     HexCell[] cells;
     public int seed;
 
+    public HexUnit unitPrefab;
+
+    List<HexUnit> units = new List<HexUnit>();
     //    public Color[] colors;
 
     public int cellCountX = 20, cellCountZ = 15;
@@ -38,12 +41,21 @@ public class HexGrid : MonoBehaviour
 
     bool currentPathExists;
 
+
+    public bool HasPath
+    {
+        get
+        {
+            return currentPathExists;
+        }
+    }
+
     void Awake()
     {
         HexMetrics.noiseSource = noiseSource;
         HexMetrics.InitializeHashGrid(seed);
         //        HexMetrics.colors = colors;
-
+        // HexUnit.unitPrefab = unitPrefab;
         CreateMap(cellCountX, cellCountZ);
     }
 
@@ -67,6 +79,7 @@ public class HexGrid : MonoBehaviour
             }
         }
         ClearPath();
+        ClearUnits();
         cellCountX = x;
         cellCountZ = z;
         chunkCountX = cellCountX / HexMetrics.chunkSizeX;
@@ -84,11 +97,18 @@ public class HexGrid : MonoBehaviour
         {
             cells[i].Save(writer);
         }
+
+        writer.Write(units.Count);
+        for (int i = 0; i < units.Count; i++)
+        {
+            units[i].Save(writer);
+        }
     }
 
     public void Load(BinaryReader reader, int header)
     {
         ClearPath();
+        ClearUnits();
         int x = 20, z = 15;
         if (header >= 1)
         {
@@ -111,6 +131,17 @@ public class HexGrid : MonoBehaviour
         {
             chunks[i].Refresh();
         }
+
+        //地图创建版本大于功能版本
+        if (header >= 2)
+        {
+            int unitCount = reader.ReadInt32();
+            for (int i = 0; i < unitCount; i++)
+            {
+                HexUnit.Load(reader, this);
+            }
+        }
+
     }
 
     void CreateChunks()
@@ -146,6 +177,7 @@ public class HexGrid : MonoBehaviour
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
+            HexUnit.unitPrefab = unitPrefab;
             //            HexMetrics.colors = colors;
         }
     }
@@ -174,6 +206,16 @@ public class HexGrid : MonoBehaviour
         }
 
         return cells[x + z * cellCountX];
+    }
+
+    public HexCell GetCell(Ray ray)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return GetCell(hit.point);
+        }
+        return null;
     }
 
     public void ShowUI(bool visible)
@@ -294,7 +336,7 @@ public class HexGrid : MonoBehaviour
     /// <summary>
     /// 清除寻路的路径点
     /// </summary>
-    void ClearPath()
+    public void ClearPath()
     {
         if (currentPathExists)
         {
@@ -386,7 +428,7 @@ public class HexGrid : MonoBehaviour
                     continue;
                 }
 
-                if (neighbor.IsUnderwater)
+                if (neighbor.IsUnderwater || neighbor.hexUnit)
                 {
                     continue;
                 }
@@ -666,4 +708,42 @@ public class HexGrid : MonoBehaviour
     //    }
 
     #endregion
+
+    #region units
+
+    void ClearUnits()
+    {
+        for (int i = 0; i < units.Count; i++)
+        {
+            units[i].Die();
+        }
+        units.Clear();
+    }
+
+    /// <summary>
+    /// 添加单位
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <param name="location"></param>
+    /// <param name="orientation"></param>
+    public void AddUnit(HexUnit unit, HexCell location, float orientation)
+    {
+        units.Add(unit);
+        unit.transform.SetParent(transform, false);
+        unit.Location = location;
+        unit.Orientation = orientation;
+    }
+
+    /// <summary>
+    /// 销毁目标单位
+    /// </summary>
+    /// <param name="unit"></param>
+    public void RemoveUnit(HexUnit unit)
+    {
+        units.Remove(unit);
+        unit.Die();
+    }
+    #endregion
+
+ 
 }
