@@ -18,3 +18,7 @@ Temp/
 *.apk
 *.zip
 *.keystore
+LearnHexMap/Logs/
+LearnHexMap/obj/Debug/Assembly-CSharp.csproj.CopyComplete
+LearnHexMap/obj/
+LearnHexMap/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll

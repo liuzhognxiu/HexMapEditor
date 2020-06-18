@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Trerrain
   m_Shader: {fileID: 4800000, guid: 2ab1138ab41e2e546b5544116242e35c, type: 3}
-  m_ShaderKeywords: GRID_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
