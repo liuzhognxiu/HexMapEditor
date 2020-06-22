@@ -218,6 +218,25 @@ public class HexGrid : MonoBehaviour
         return null;
     }
 
+    public List<HexCell> GetPath()
+    {
+        if (!currentPathExists)
+        {
+            return null;
+        }
+
+        List<HexCell> path = ListPool<HexCell>.Get();
+
+        for (HexCell c = currentPathTo; c != currentPathFrom; c = c.PathFrom)
+        {
+            path.Add(c);
+        }
+        path.Add(currentPathFrom);
+        path.Reverse();
+
+        return path;
+    }
+
     public void ShowUI(bool visible)
     {
         for (int i = 0; i < chunks.Length; i++)
@@ -323,7 +342,7 @@ public class HexGrid : MonoBehaviour
             HexCell current = currentPathTo;
             while (current != currentPathFrom)
             {
-                int turn = current.Distance / speed;
+                int turn = (current.Distance - 1) / speed;
                 current.SetLabel(turn.ToString());
                 current.EnableHighlight(Color.white);
                 current = current.PathFrom;
@@ -416,7 +435,7 @@ public class HexGrid : MonoBehaviour
             }
 
             //当前的回合数（逻辑强相关）
-            int currentTurn = current.Distance / speed;
+            int currentTurn = (current.Distance - 1) / speed;
 
             for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
@@ -461,7 +480,7 @@ public class HexGrid : MonoBehaviour
                 int distance = current.Distance + moveCost;
 
                 //需要行动多少个回合
-                int turn = distance / speed;
+                int turn = (distance - 1) / speed;
 
                 if (turn > currentTurn)
                 {
@@ -745,5 +764,5 @@ public class HexGrid : MonoBehaviour
     }
     #endregion
 
- 
+
 }

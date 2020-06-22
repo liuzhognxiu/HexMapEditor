@@ -282,7 +282,6 @@ public class HexMapEditor : MonoBehaviour
             // unit.Location = cell;
             // //开始创建为随机方向
             // unit.Orientation = Random.Range(0f, 360f);
-            Debug.Log("!!!!!!!!!!!1");
             hexGrid.AddUnit(
                 Instantiate(unitPrefab), cell, Random.Range(0f, 360f)
             );
