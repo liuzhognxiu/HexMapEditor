@@ -10,6 +10,19 @@ public class HexCell : MonoBehaviour
 
     public HexGridChunk chunk;
 
+    public int Index { get; set; }
+    public HexCellShaderData ShaderData { get; set; }
+    public bool IsVisible
+    {
+        get
+        {
+            return visibility > 0;
+        }
+    }
+
+    int visibility;
+
+
 
     /// <summary>
     /// Cell上的单位
@@ -28,7 +41,8 @@ public class HexCell : MonoBehaviour
             if (terrainTypeIndex != value)
             {
                 terrainTypeIndex = value;
-                Refresh();
+                // Refresh();
+                ShaderData.RefreshTerrain(this);
             }
         }
     }
@@ -57,6 +71,24 @@ public class HexCell : MonoBehaviour
             }
 
             Refresh();
+        }
+    }
+
+    public void IncreaseVisibility()
+    {
+        visibility += 1;
+        if (visibility == 1)
+        {
+            ShaderData.RefreshVisibility(this);
+        }
+    }
+
+    public void DecreaseVisibility()
+    {
+        visibility -= 1;
+        if (visibility == 0)
+        {
+            ShaderData.RefreshVisibility(this);
         }
     }
 
@@ -576,6 +608,7 @@ public class HexCell : MonoBehaviour
     public void Load(BinaryReader reader)
     {
         terrainTypeIndex = reader.ReadByte();
+        ShaderData.RefreshTerrain(this);
         elevation = reader.ReadByte();
         RefreshPosition();
         waterLevel = reader.ReadByte();
