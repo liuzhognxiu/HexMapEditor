@@ -11,10 +11,6 @@ public class HexGridChunk : MonoBehaviour
 
     Canvas gridCanvas;
 
-    static Color color1 = new Color(1f, 0f, 0f);
-    static Color color2 = new Color(0f, 1f, 0f);
-    static Color color3 = new Color(0f, 0f, 1f);
-
     static Color weights1 = new Color(1f, 0f, 0f);
     static Color weights2 = new Color(0f, 1f, 0f);
     static Color weights3 = new Color(0f, 0f, 1f);
@@ -997,25 +993,24 @@ public class HexGridChunk : MonoBehaviour
         {
             b = -b;
         }
-
         Vector3 boundary = Vector3.Lerp(
             HexMetrics.Perturb(begin), HexMetrics.Perturb(right), b
         );
-        Color boundaryWeights = Color.Lerp(color1, color3, b);
-
+        Color boundaryWeights = Color.Lerp(weights1, weights3, b);
         Vector3 indices;
         indices.x = beginCell.Index;
         indices.y = leftCell.Index;
         indices.z = rightCell.Index;
 
         TriangulateBoundaryTriangle(
-            begin, color1, left, color2, boundary, boundaryWeights, indices
+            begin, weights1, left, weights2, boundary, boundaryWeights, indices
         );
 
         if (leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope)
         {
             TriangulateBoundaryTriangle(
-                left, color2, right, color3, boundary, boundaryWeights, indices
+                left, weights2, right, weights3,
+                boundary, boundaryWeights, indices
             );
         }
         else
@@ -1026,10 +1021,6 @@ public class HexGridChunk : MonoBehaviour
             terrain.AddTriangleCellData(
                 indices, weights2, weights3, boundaryWeights
             );
-            // terrain.AddTriangleColor(
-            //     color2, color3, boundaryWeights
-            // );
-            // terrain.AddTriangleTerrainTypes(indices);
         }
     }
 
