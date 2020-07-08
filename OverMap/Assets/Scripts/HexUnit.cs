@@ -30,12 +30,15 @@ public class HexUnit : MonoBehaviour
             m_Location = value;
             value.Unit = this;
             Grid.IncreaseVisibility(value, m_VisionRange);
-            transform.localPosition = value.Position;
+            if (this.isFly)
+            {
+                transform.localPosition = new Vector3(value.Position.x, 10, value.Position.z); 
+            }
             Grid.MakeChildOfColumn(transform, value.ColumnIndex);
         }
     }
 
-    HexCell m_Location, m_CurrentTravelLocation;
+    public HexCell m_Location, m_CurrentTravelLocation;
 
     private float m_Orientation;
 
@@ -59,11 +62,15 @@ public class HexUnit : MonoBehaviour
     }
 
 
-    List<HexCell> _pathToTravel;
+    public List<HexCell> _pathToTravel;
 
     public void ValidateLocation()
     {
         transform.localPosition = m_Location.Position;
+        if (this.isFly)
+        {
+            transform.localPosition = new Vector3(m_Location.Position.x, 10, m_Location.Position.z);
+        }
     }
 
     public bool IsValidDestination(HexCell cell)
@@ -71,7 +78,7 @@ public class HexUnit : MonoBehaviour
         return (cell.IsExplored && !cell.IsUnderwater && !cell.Unit) || (this.isCanWater && cell.IsUnderwater) || this.isFly;
     }
 
-    public void Travel(List<HexCell> path)
+    public virtual void Travel(List<HexCell> path)
     {
         m_Location.Unit = null;
         m_Location = path[path.Count - 1];
@@ -81,7 +88,7 @@ public class HexUnit : MonoBehaviour
         StartCoroutine(TravelPath());
     }
 
-    IEnumerator TravelPath()
+    public virtual IEnumerator TravelPath()
     {
         Vector3 a, b, c = _pathToTravel[0].Position;
         yield return LookAt(_pathToTravel[1].Position);
@@ -147,12 +154,16 @@ public class HexUnit : MonoBehaviour
         }
 
         transform.localPosition = m_Location.Position;
+        if (this.isFly)
+        {
+            transform.localPosition = new Vector3(m_Location.Position.x, m_Location.Position.y + 10, m_Location.Position.z);
+        }
         m_Orientation = transform.localRotation.eulerAngles.y;
         ListPool<HexCell>.Add(_pathToTravel);
         _pathToTravel = null;
     }
 
-    IEnumerator LookAt(Vector3 point)
+    public IEnumerator LookAt(Vector3 point)
     {
         if (HexMetrics.Wrapping)
         {

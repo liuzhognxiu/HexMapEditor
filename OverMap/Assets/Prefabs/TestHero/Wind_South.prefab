@@ -92,7 +92,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a81b8595f96561b409a08a46caaaeb51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isFly: 1
+  isFly: 0
   isCanWater: 0
   speed: 36
-  visionRange: 3
