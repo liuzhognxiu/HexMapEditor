@@ -1,23 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectTestHero : MonoBehaviour
+namespace Assets.Scripts.UI.Hero
 {
-    public List<Hero> prefabs;
-    void Start()
+    public class SelectTestHero : MonoBehaviour
     {
-        if (prefabs != null)
+        public List<Hero> prefabs;
+        void Start()
         {
-
-            for (int i = 0; i < prefabs.Count; i++)
+            if (prefabs != null)
             {
-                int j = i;
-                prefabs[i].gameObject.AddComponent<Button>().onClick.AddListener(delegate ()
+
+                for (int i = 0; i < prefabs.Count; i++)
+                {
+                    int j = i;
+                    prefabs[i].gameObject.AddComponent<Button>().onClick.AddListener(delegate ()
                     {
-                        HexUnit.unitPrefab = prefabs[j].Prefab;
+                        HexUnit.unitPrefab = prefabs[j].prefab;
                     });
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
+using Assets.Scripts.UI.Hero;
 
 public class HexMapEditor : MonoBehaviour {
 

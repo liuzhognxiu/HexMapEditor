@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(HexUnit), true)]
-public class TestHero : HexUnit
+namespace Assets.Scripts.Unit
 {
-    void Start()
+    [CustomEditor(typeof(HexUnit), true)]
+    public class TestHero : HexUnit
     {
-        Debug.Log(isFly + isCanWater.ToString());
-        speed = 36;
+        void Start()
+        {
+            visionRange = isFly ? 5 : 3;
+        }
     }
 }

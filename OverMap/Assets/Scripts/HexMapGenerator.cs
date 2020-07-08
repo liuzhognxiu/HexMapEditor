@@ -7,81 +7,108 @@ public class HexMapGenerator : MonoBehaviour {
 
 	public bool useFixedSeed;
 
+    [InspectorShow("随机数种子")]
 	public int seed;
 
 	[Range(0f, 0.5f)]
-	public float jitterProbability = 0.25f;
+    [Header("地图复杂程度")]
+    public float jitterProbability = 0.25f;
 
 	[Range(20, 200)]
-	public int chunkSizeMin = 30;
+    [Header("最小的地图大小")]
+    public int chunkSizeMin = 30;
 
-	[Range(20, 200)]
-	public int chunkSizeMax = 100;
+
+    [Header("最大的地图大小")]
+    [Range(20, 200)]
+    public int chunkSizeMax = 100;
 
 	[Range(0f, 1f)]
-	public float highRiseProbability = 0.25f;
+    [Header("高层出现的权重")]
+    public float highRiseProbability = 0.25f;
 
 	[Range(0f, 0.4f)]
-	public float sinkProbability = 0.2f;
+    [Header("洼地出现的权重")]
+    public float sinkProbability = 0.2f;
 
 	[Range(5, 95)]
-	public int landPercentage = 50;
+    [Header("陆地所在地图百分比")]
+    public int landPercentage = 50;
 
 	[Range(1, 5)]
-	public int waterLevel = 3;
+    [Header("水面所在高度")]
+    public int waterLevel = 3;
 
 	[Range(-4, 0)]
-	public int elevationMinimum = -2;
+    [Header("最低海拔高度")]
+    public int elevationMinimum = -2;
 
 	[Range(6, 10)]
-	public int elevationMaximum = 8;
+    [Header("最高海拔高度")]
+    public int elevationMaximum = 8;
+
+    [Header("横向地图边界")]
+	[Range(0, 10)]
+    public int mapBorderX = 5;
+
+    [Header("纵向地图边界")]
+	[Range(0, 10)]
+    public int mapBorderZ = 5;
 
 	[Range(0, 10)]
-	public int mapBorderX = 5;
-
-	[Range(0, 10)]
-	public int mapBorderZ = 5;
-
-	[Range(0, 10)]
-	public int regionBorder = 5;
+    [Header("城池边界")]
+    public int regionBorder = 5;
 
 	[Range(1, 4)]
+    [Header("城池数量")]
 	public int regionCount = 1;
 
-	[Range(0, 100)]
+    [Range(0, 100)]
+    [Header("地图侵蚀程度")]
 	public int erosionPercentage = 50;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("地貌初始湿度")]
 	public float startingMoisture = 0.1f;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("地貌蒸发率")]
 	public float evaporationFactor = 0.5f;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("降水量占比")]
 	public float precipitationFactor = 0.25f;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("河流占比")]
 	public float runoffFactor = 0.25f;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("水流渗透占比")]
 	public float seepageFactor = 0.125f;
 
-	public HexDirection windDirection = HexDirection.NW;
+    [Header("风的方向")]
+    public HexDirection windDirection = HexDirection.NW;
 
-	[Range(1f, 10f)]
+    [Range(1f, 10f)]
+    [Header("风的强度")]
 	public float windStrength = 4f;
 
-	[Range(0, 20)]
-	public int riverPercentage = 10;
+    [Range(0, 20)]
+    [Header("河流百分比")]
+    public int riverPercentage = 10;
 
 	[Range(0f, 1f)]
+    [Header("产生湖泊的概率")]
 	public float extraLakeProbability = 0.25f;
 
-	[Range(0f, 1f)]
+    [Range(0f, 1f)]
+    [Header("低温")]
 	public float lowTemperature = 0f;
 
-	[Range(0f, 1f)]
-	public float highTemperature = 1f;
+    [Range(0f, 1f)]
+    [Header("高温")]
+    public float highTemperature = 1f;
 
 	public enum HemisphereMode {
 		Both, North, South

@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.Unit;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Hero : MonoBehaviour
+namespace Assets.Scripts.UI.Hero
 {
-    public Image heroImage;
+    public class Hero : MonoBehaviour
+    {
+        public Image heroImage;
 
-    public TestHero Prefab;
+        public TestHero prefab;
 
+    }
 }

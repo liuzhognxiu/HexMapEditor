@@ -5,9 +5,9 @@ public class HexGameUI : MonoBehaviour {
 
 	public HexGrid grid;
 
-	HexCell currentCell;
+	HexCell m_CurrentCell;
 
-	HexUnit selectedUnit;
+	HexUnit m_SelectedUnit;
 
 	public void SetEditMode (bool toggle) {
 		enabled = !toggle;
@@ -26,7 +26,7 @@ public class HexGameUI : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0)) {
 				DoSelection();
 			}
-			else if (selectedUnit) {
+			else if (m_SelectedUnit) {
 				if (Input.GetMouseButtonDown(1)) {
 					DoMove();
 				}
@@ -40,15 +40,15 @@ public class HexGameUI : MonoBehaviour {
 	void DoSelection () {
 		grid.ClearPath();
 		UpdateCurrentCell();
-		if (currentCell) {
-			selectedUnit = currentCell.Unit;
+		if (m_CurrentCell) {
+			m_SelectedUnit = m_CurrentCell.Unit;
 		}
 	}
 
 	void DoPathfinding () {
 		if (UpdateCurrentCell()) {
-			if (currentCell && selectedUnit.IsValidDestination(currentCell)) {
-				grid.FindPath(selectedUnit.Location, currentCell, selectedUnit);
+			if (m_CurrentCell && m_SelectedUnit.IsValidDestination(m_CurrentCell)) {
+				grid.FindPath(m_SelectedUnit.Location, m_CurrentCell, m_SelectedUnit);
 			}
 			else {
 				grid.ClearPath();
@@ -58,7 +58,7 @@ public class HexGameUI : MonoBehaviour {
 
 	void DoMove () {
 		if (grid.HasPath) {
-			selectedUnit.Travel(grid.GetPath());
+			m_SelectedUnit.Travel(grid.GetPath());
 			grid.ClearPath();
 		}
 	}
@@ -66,8 +66,8 @@ public class HexGameUI : MonoBehaviour {
 	bool UpdateCurrentCell () {
 		HexCell cell =
 			grid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
-		if (cell != currentCell) {
-			currentCell = cell;
+		if (cell != m_CurrentCell) {
+			m_CurrentCell = cell;
 			return true;
 		}
 		return false;
