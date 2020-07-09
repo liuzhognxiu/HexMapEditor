@@ -3,6 +3,7 @@
 public static class HexMetrics {
 
 	public const float outerToInner = 0.866025404f;
+
 	public const float innerToOuter = 1f / outerToInner;
 
 	public const float outerRadius = 10f;
@@ -56,6 +57,11 @@ public static class HexMetrics {
 	public const int hashGridSize = 256;
 
 	public const float hashGridScale = 0.25f;
+
+    /// <summary>
+    /// 水平面高度
+    /// </summary>
+    public const float kWaterPositionY = 10;
 
 	static HexHash[] hashGrid;
 

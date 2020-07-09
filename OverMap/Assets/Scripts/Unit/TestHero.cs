@@ -8,7 +8,7 @@ namespace Assets.Scripts.Unit
     [CustomEditor(typeof(HexUnit), true)]
     public class TestHero : HexUnit
     {
-        public float flyHight = 10;
+        public float flyHight = 5;
         void Start()
         {
             visionRange = isFly ? 5 : 3;
@@ -25,9 +25,19 @@ namespace Assets.Scripts.Unit
         }
 
 
+        /// <summary>
+        /// 根据起飞的高度，判断当前风行是否需要上升
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         private Vector3 getFlyVector3(Vector3 position, float y)
         {
-            if (y <= position.y)
+            if (this.Location.IsUnderwater)
+            {
+                return new Vector3(position.x, 5, position.z);
+            }
+            if (y < position.y)
             {
                 return position;
             }
@@ -110,7 +120,15 @@ namespace Assets.Scripts.Unit
                 yield return null;
             }
 
-            transform.localPosition = m_Location.Position + new Vector3(0, flyHight, 0);
+            //如果cell是在水平面一下，飞翔的英雄保持再水平面以上的飞行高度
+            if (Location.IsUnderwater && isFly)
+            {
+                transform.localPosition = new Vector3(m_Location.Position.x, HexMetrics.kWaterPositionY + flyHight, m_Location.Position.z);
+            }
+            else
+            {
+                transform.localPosition = m_Location.Position + new Vector3(0, flyHight, 0);
+            }
             Orientation = transform.localRotation.eulerAngles.y;
             ListPool<HexCell>.Add(_pathToTravel);
             _pathToTravel = null;

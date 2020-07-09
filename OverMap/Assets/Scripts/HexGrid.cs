@@ -498,6 +498,11 @@ public class HexGrid : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 亮起的视野范围
+    /// </summary>
+    /// <param name="fromCell"></param>
+    /// <param name="range"></param>
     public void IncreaseVisibility(HexCell fromCell, int range)
     {
         List<HexCell> cells = GetVisibleCells(fromCell, range);
