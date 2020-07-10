@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Assets.Scripts.Unit
 {
+#if UNITY_EDITOR
     [CustomEditor(typeof(HexUnit), true)]
+#endif
     public class TestHero : HexUnit
     {
         public float flyHight = 5;

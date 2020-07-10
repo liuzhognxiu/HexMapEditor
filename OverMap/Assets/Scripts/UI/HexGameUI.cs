@@ -13,12 +13,12 @@ public class HexGameUI : MonoBehaviour {
 		enabled = !toggle;
 		grid.ShowUI(!toggle);
 		grid.ClearPath();
-		if (toggle) {
-			Shader.EnableKeyword("HEX_MAP_EDIT_MODE");
-		}
-		else {
-			Shader.DisableKeyword("HEX_MAP_EDIT_MODE");
-		}
+		// if (toggle) {
+		// 	Shader.EnableKeyword("HEX_MAP_EDIT_MODE");
+		// }
+		// else {
+		// 	Shader.DisableKeyword("HEX_MAP_EDIT_MODE");
+		// }
 	}
 
 	void Update () {
@@ -26,7 +26,7 @@ public class HexGameUI : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0)) {
 				DoSelection();
 			}
-			else if (m_SelectedUnit) {
+			else if (m_SelectedUnit && m_SelectedUnit.isCanSelect) {
 				if (Input.GetMouseButtonDown(1)) {
 					DoMove();
 				}

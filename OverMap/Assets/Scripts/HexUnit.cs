@@ -11,6 +11,8 @@ public class HexUnit : MonoBehaviour
 
     public static HexUnit unitPrefab;
 
+    public bool isCanSelect = true;
+
     public bool isFly = false;
 
     public bool isCanWater = false;

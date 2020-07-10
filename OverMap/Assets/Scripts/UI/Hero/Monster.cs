@@ -1,13 +1,14 @@
-﻿using Assets.Scripts.Unit;
+﻿using Assets.Scripts.Monster;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.UI.Hero
 {
-    public class Hero : MonoBehaviour
+
+    public class Monster : MonoBehaviour
     {
         public Image heroImage;
 
-        public TestHero prefab;
+        public MonsterBase prefab;
     }
 }
