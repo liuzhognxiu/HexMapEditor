@@ -77,7 +77,6 @@ public class HexGameUI : MonoBehaviour
         
         if (m_CurrentCell && m_CurrentCell.Unit.isMonster)
         {
-            Debug.Log("发现怪物:" + m_CurrentCell.Index);
             for (int i = 0; i < 6; i++)
             {
                 if (m_SelectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)

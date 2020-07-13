@@ -11154,7 +11154,7 @@ MonoBehaviour:
   cellLabelPrefab: {fileID: 11470134, guid: f68794ca03b6f4510b9a5bd6ee9ba2f4, type: 3}
   chunkPrefab: {fileID: 114000010052569294, guid: 7622d007cafd044a1b1189c0b93d2912,
     type: 3}
-  unitPrefab: {fileID: 114701888605048992, guid: 5661a1efcb9464721b4db3f694ded559,
+  unitPrefab: {fileID: -7139152918182845355, guid: 123178e371a353e46a781b5126e41d85,
     type: 3}
   noiseSource: {fileID: 2800000, guid: 38701cdeb1fb9427cbb585f917aa59cb, type: 3}
   seed: 1234
@@ -14962,6 +14962,7 @@ MonoBehaviour:
   lowTemperature: 0
   highTemperature: 1
   monster: {fileID: 5501681193746214312, guid: 2d0c51c83db80e241a840adba47761b4, type: 3}
+  hero: {fileID: -7139152918182845355, guid: 123178e371a353e46a781b5126e41d85, type: 3}
   hemisphere: 0
   temperatureJitter: 0.1
 --- !u!4 &2056945513

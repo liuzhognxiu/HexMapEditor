@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Hero;
 using Assets.Scripts.Monster;
+using Assets.Scripts.Unit;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -116,6 +118,7 @@ public class HexMapGenerator : MonoBehaviour
 
 
     public MonsterBase monster;
+    public TestHero hero;
     public enum HemisphereMode
     {
         Both, North, South
@@ -397,6 +400,9 @@ public class HexMapGenerator : MonoBehaviour
     {
         searchFrontierPhase += 1;
         HexCell firstCell = GetRandomCell(region);
+        grid.AddUnit(
+            Instantiate<TestHero>(hero), firstCell, Random.Range(0f, 360f)
+        );
         firstCell.SearchPhase = searchFrontierPhase;
         firstCell.Distance = 0;
         firstCell.SearchHeuristic = 0;
