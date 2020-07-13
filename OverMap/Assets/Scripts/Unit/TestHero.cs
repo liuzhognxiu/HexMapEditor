@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Hero;
+using Assets.Scripts.Monster;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,8 +15,14 @@ namespace Assets.Scripts.Unit
     public class TestHero : HexUnit
     {
         public float flyHight = 5;
+
         void Start()
         {
+            Base = new HeroBase
+            {
+                unit = this,
+            };
+            speed = Base.speed;
             visionRange = isFly ? 5 : 3;
         }
 
@@ -26,6 +34,18 @@ namespace Assets.Scripts.Unit
             _pathToTravel = path;
             StopAllCoroutines();
             StartCoroutine(TravelPath());
+        }
+
+        public override void Attack(HeroBase monster)
+        {
+            Base.hp -= (monster.attack > Base.def) ? monster.attack - Base.def : 0;
+            monster.hp -= (Base.attack > monster.def) ? Base.attack - monster.def : 0;
+            Debug.Log("英雄所剩血量：" + Base.hp);
+            Debug.Log("怪物所剩血量：" + monster.hp);
+            if (monster.hp <= 0)
+            {
+                Grid.RemoveUnit(monster.unit);
+            }
         }
 
 

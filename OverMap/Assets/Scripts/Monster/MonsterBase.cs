@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Hero;
+using UnityEngine;
 
 namespace Assets.Scripts.Monster
 {
@@ -10,7 +11,14 @@ namespace Assets.Scripts.Monster
         public void Start()
         {
             isCanSelect = false;
-            // ValidateLocation();
+            isMonster = true;
+            Base = new HeroBase
+            {
+                attack = 1,
+                speed = 0,
+                def = 3,
+                unit  = this,
+            };
         }
     }
 }

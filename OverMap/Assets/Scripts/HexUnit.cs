@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Assets.Scripts.Hero;
 
 public class HexUnit : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class HexUnit : MonoBehaviour
     public bool isFly = false;
 
     public bool isCanWater = false;
+
+    public bool isMonster = false;
+
+    public HeroBase Base;
 
     public HexGrid Grid { get; set; }
 
@@ -34,7 +39,7 @@ public class HexUnit : MonoBehaviour
             Grid.IncreaseVisibility(value, m_VisionRange);
             if (this.isFly)
             {
-                transform.localPosition = new Vector3(value.Position.x, 10, value.Position.z); 
+                transform.localPosition = new Vector3(value.Position.x, 10, value.Position.z);
             }
             Grid.MakeChildOfColumn(transform, value.ColumnIndex);
         }
@@ -77,7 +82,17 @@ public class HexUnit : MonoBehaviour
 
     public bool IsValidDestination(HexCell cell)
     {
-        return (cell.IsExplored && !cell.IsUnderwater && !cell.Unit) || (this.isCanWater && cell.IsUnderwater) || this.isFly;
+        return ((cell.IsExplored && !cell.IsUnderwater) || (this.isCanWater && cell.IsUnderwater) || this.isFly) && !cell.Unit;
+    }
+
+    public bool IsMonster(HexCell cell)
+    {
+        return cell.Unit.isMonster;
+    }
+
+    public bool IsMonster()
+    {
+        return isMonster;
     }
 
     public virtual void Travel(List<HexCell> path)
@@ -88,6 +103,11 @@ public class HexUnit : MonoBehaviour
         _pathToTravel = path;
         StopAllCoroutines();
         StartCoroutine(TravelPath());
+    }
+
+    public virtual void Attack(HeroBase monster)
+    {
+
     }
 
     public virtual IEnumerator TravelPath()
