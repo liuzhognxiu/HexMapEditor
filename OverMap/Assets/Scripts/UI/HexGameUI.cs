@@ -4,11 +4,18 @@ using UnityEngine.EventSystems;
 public class HexGameUI : MonoBehaviour
 {
 
+    public static HexGameUI Instrance;
+
     public HexGrid grid;
 
     HexCell m_CurrentCell;
 
-    HexUnit m_SelectedUnit;
+    public HexUnit selectedUnit;
+
+    void Awake()
+    {
+        Instrance = this;
+    }
 
     public void SetEditMode(bool toggle)
     {
@@ -31,7 +38,7 @@ public class HexGameUI : MonoBehaviour
             {
                 DoSelection();
             }
-            else if (m_SelectedUnit && m_SelectedUnit.isCanSelect)
+            else if (selectedUnit && selectedUnit.isCanSelect)
             {
                 if (Input.GetMouseButtonDown(1))
                 {
@@ -53,7 +60,7 @@ public class HexGameUI : MonoBehaviour
         UpdateCurrentCell();
         if (m_CurrentCell)
         {
-            m_SelectedUnit = m_CurrentCell.Unit;
+            selectedUnit = m_CurrentCell.Unit;
         }
     }
 
@@ -61,9 +68,9 @@ public class HexGameUI : MonoBehaviour
     {
         if (UpdateCurrentCell())
         {
-            if (m_CurrentCell && m_SelectedUnit.IsValidDestination(m_CurrentCell))
+            if (m_CurrentCell && selectedUnit.IsValidDestination(m_CurrentCell))
             {
-                grid.FindPath(m_SelectedUnit.Location, m_CurrentCell, m_SelectedUnit);
+                grid.FindPath(selectedUnit.Location, m_CurrentCell, selectedUnit);
             }
             else
             {
@@ -79,9 +86,9 @@ public class HexGameUI : MonoBehaviour
         {
             for (int i = 0; i < 6; i++)
             {
-                if (m_SelectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)
+                if (selectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)
                 {
-                    m_SelectedUnit.Attack(m_CurrentCell.Unit.Base);
+                    selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
                 }
             }
         }
@@ -92,7 +99,7 @@ public class HexGameUI : MonoBehaviour
     {
         if (grid.HasPath)
         {
-            m_SelectedUnit.Travel(grid.GetPath());
+            selectedUnit.Travel(grid.GetPath());
             grid.ClearPath();
         }
     }

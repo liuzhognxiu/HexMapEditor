@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Buff;
 using Assets.Scripts.Hero;
 using Assets.Scripts.Monster;
 using Assets.Scripts.Unit;
@@ -205,17 +206,39 @@ public class HexMapGenerator : MonoBehaviour
         CreateClimate();
         CreateRivers();
         SetTerrainType();
-
+        CreateBuff();
 
         for (int i = 0; i < cellCount; i++)
         {
             grid.GetCell(i).SearchPhase = 0;
         }
-       
+
 
         Random.state = originalRandomState;
     }
 
+
+    void CreateBuff()
+    {
+        // for (int j = 0; j < (int)Bufftype.RecoverBlood; j++)
+        // {
+            for (int i = 0; i < cellCount; i++)
+            {
+                if (grid.GetCell(i).Unit == null)
+                {
+                    if (grid.GetCell(i).Buff == null)
+                    {
+                        grid.GetCell(i).Buff = new AttackBuff();
+                        grid.GetCell(i).Buff.bufftype = Bufftype.Attack;
+                    }
+                }
+            }
+        // }
+    }
+
+    /// <summary>
+    /// 随机生成怪物
+    /// </summary>
     void CreateMonster()
     {
         for (int i = 0; i < cellCount; i++)
@@ -542,6 +565,9 @@ public class HexMapGenerator : MonoBehaviour
         return target;
     }
 
+    /// <summary>
+    /// 添加气候数据
+    /// </summary>
     void CreateClimate()
     {
         climate.Clear();
@@ -797,6 +823,9 @@ public class HexMapGenerator : MonoBehaviour
         return length;
     }
 
+    /// <summary>
+    /// 生成地图地貌
+    /// </summary>
     void SetTerrainType()
     {
         temperatureJitterChannel = Random.Range(0, 4);
@@ -826,31 +855,32 @@ public class HexMapGenerator : MonoBehaviour
                         break;
                     }
                 }
-                Biome cellBiome = biomes[t * 4 + m];
-
-                if (cellBiome.terrain == 0)
-                {
-                    if (cell.Elevation >= rockDesertElevation)
-                    {
-                        cellBiome.terrain = 3;
-                    }
-                }
-                else if (cell.Elevation == elevationMaximum)
-                {
-                    cellBiome.terrain = 4;
-                }
-
-                if (cellBiome.terrain == 4)
-                {
-                    cellBiome.plant = 0;
-                }
-                else if (cellBiome.plant < 3 && cell.HasRiver)
-                {
-                    cellBiome.plant += 1;
-                }
-
-                cell.TerrainTypeIndex = cellBiome.terrain;
-                cell.PlantLevel = cellBiome.plant;
+                //隐藏植被的生成
+                // Biome cellBiome = biomes[t * 4 + m];
+                //
+                // if (cellBiome.terrain == 0)
+                // {
+                //     if (cell.Elevation >= rockDesertElevation)
+                //     {
+                //         cellBiome.terrain = 3;
+                //     }
+                // }
+                // else if (cell.Elevation == elevationMaximum)
+                // {
+                //     cellBiome.terrain = 4;
+                // }
+                //
+                // if (cellBiome.terrain == 4)
+                // {
+                //     cellBiome.plant = 0;
+                // }
+                // else if (cellBiome.plant < 3 && cell.HasRiver)
+                // {
+                //     cellBiome.plant += 1;
+                // }
+                //
+                // cell.TerrainTypeIndex = cellBiome.terrain;
+                // cell.PlantLevel = cellBiome.plant;
             }
             else
             {

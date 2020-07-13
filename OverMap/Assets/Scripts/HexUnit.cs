@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,9 @@ public class HexUnit : MonoBehaviour
 
     public bool isMonster = false;
 
-    public HeroBase Base;
+    public Action PathfindOverBack;
+
+    public HeroBase unitBase;
 
     public HexGrid Grid { get; set; }
 
@@ -175,6 +178,8 @@ public class HexUnit : MonoBehaviour
             yield return null;
         }
 
+
+
         transform.localPosition = m_Location.Position;
         if (this.isFly)
         {
@@ -182,6 +187,7 @@ public class HexUnit : MonoBehaviour
         }
         m_Orientation = transform.localRotation.eulerAngles.y;
         ListPool<HexCell>.Add(_pathToTravel);
+        PathfindOverBack.Invoke();
         _pathToTravel = null;
     }
 

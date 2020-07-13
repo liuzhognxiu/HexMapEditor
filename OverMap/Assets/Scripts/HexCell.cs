@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using Assets.Scripts.Buff;
 
 public class HexCell : MonoBehaviour {
 
@@ -259,7 +260,9 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
-	public HexUnit Unit { get; set; }
+    public BuffBase Buff { get; set; }
+
+    public HexUnit Unit { get; set; }
 
 	public HexCell PathFrom { get; set; }
 

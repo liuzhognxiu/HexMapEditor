@@ -18,12 +18,19 @@ namespace Assets.Scripts.Unit
 
         void Start()
         {
-            Base = new HeroBase
+            unitBase = new HeroBase
             {
                 unit = this,
             };
-            speed = Base.speed;
+            speed = unitBase.speed;
             visionRange = isFly ? 5 : 3;
+
+            PathfindOverBack = OverPath;
+        }
+
+        private void OverPath()
+        {
+            Debug.Log("英雄怒吼！！！！！！！！！");
         }
 
         public override void Travel(List<HexCell> path)
@@ -38,9 +45,9 @@ namespace Assets.Scripts.Unit
 
         public override void Attack(HeroBase monster)
         {
-            Base.hp -= (monster.attack > Base.def) ? monster.attack - Base.def : 0;
-            monster.hp -= (Base.attack > monster.def) ? Base.attack - monster.def : 0;
-            Debug.Log("英雄所剩血量：" + Base.hp);
+            unitBase.hp -= (monster.attack > unitBase.def) ? monster.attack - unitBase.def : 0;
+            monster.hp -= (unitBase.attack > monster.def) ? unitBase.attack - monster.def : 0;
+            Debug.Log("英雄所剩血量：" + unitBase.hp);
             Debug.Log("怪物所剩血量：" + monster.hp);
             if (monster.hp <= 0)
             {
@@ -91,7 +98,7 @@ namespace Assets.Scripts.Unit
                 m_CurrentTravelLocation = _pathToTravel[i];
                 a = c;
                 b = _pathToTravel[i - 1].Position;
-
+                AddBuff(_pathToTravel[i]);
                 int nextColumn = m_CurrentTravelLocation.ColumnIndex;
                 if (currentColumn != nextColumn)
                 {
@@ -155,7 +162,15 @@ namespace Assets.Scripts.Unit
             }
             Orientation = transform.localRotation.eulerAngles.y;
             ListPool<HexCell>.Add(_pathToTravel);
+
             _pathToTravel = null;
+            PathfindOverBack.Invoke();
+        }
+
+        void AddBuff(HexCell cell)
+        {
+            Debug.Log("!!!!!!!!!");
+            cell.Buff?.OnEnter();
         }
     }
 }

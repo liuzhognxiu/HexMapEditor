@@ -12,7 +12,7 @@ namespace Assets.Scripts.Monster
         {
             isCanSelect = false;
             isMonster = true;
-            Base = new HeroBase
+            unitBase = new HeroBase
             {
                 attack = 1,
                 speed = 0,
