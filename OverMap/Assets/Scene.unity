@@ -2781,6 +2781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 1571186511}
+  selectedUnit: {fileID: 0}
 --- !u!1 &345848024
 GameObject:
   m_ObjectHideFlags: 0
@@ -14941,9 +14942,9 @@ MonoBehaviour:
   chunkSizeMax: 100
   highRiseProbability: 0.25
   sinkProbability: 0.2
-  landPercentage: 50
-  waterLevel: 3
-  elevationMinimum: -2
+  landPercentage: 63
+  waterLevel: 0
+  elevationMinimum: 0
   elevationMaximum: 8
   mapBorderX: 5
   mapBorderZ: 5
@@ -14961,6 +14962,10 @@ MonoBehaviour:
   extraLakeProbability: 0.25
   lowTemperature: 0
   highTemperature: 1
+  AttackBuffProbability: 0.25
+  DefBuffProbability: 0.25
+  HPBuffProbability: 0.25
+  EventBuffProbability: 0.1
   monster: {fileID: 5501681193746214312, guid: 2d0c51c83db80e241a840adba47761b4, type: 3}
   hero: {fileID: -7139152918182845355, guid: 123178e371a353e46a781b5126e41d85, type: 3}
   hemisphere: 0

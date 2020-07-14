@@ -85,15 +85,8 @@ public class HexGameUI : MonoBehaviour
 
         if (m_CurrentCell && m_CurrentCell.Unit && m_CurrentCell.Unit.isMonster)
         {
-            // Debug.Log(selectedUnit.gameObject.name);
+            Debug.Log(selectedUnit.gameObject.name);
             selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
-            // for (int i = 0; i < 6; i++)
-            // {
-            //     if (selectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)
-            //     {
-            //         selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
-            //     }
-            // }
         }
 
     }

@@ -85,7 +85,7 @@ public class HexUnit : MonoBehaviour
 
     public bool IsValidDestination(HexCell cell)
     {
-        return ((cell.IsExplored && !cell.IsUnderwater) || (this.isCanWater && cell.IsUnderwater) || this.isFly);
+        return (cell.IsExplored && !cell.IsUnderwater || (this.isCanWater && cell.IsUnderwater) || this.isFly);
     }
 
     public bool IsMonster()

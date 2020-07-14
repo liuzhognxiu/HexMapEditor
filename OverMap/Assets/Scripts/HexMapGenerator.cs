@@ -42,9 +42,9 @@ public class HexMapGenerator : MonoBehaviour
     [Header("陆地所在地图百分比")]
     public int landPercentage = 80;
 
-    [Range(1, 5)]
+    [Range(0, 5)]
     [Header("水面所在高度")]
-    public int waterLevel = 3;
+    public int waterLevel = 0;
 
     [Range(-4, 0)]
     [Header("最低海拔高度")]
@@ -219,12 +219,14 @@ public class HexMapGenerator : MonoBehaviour
         }
         CreateMonster();
         CreateRegions();
-        CreateLand();
-        ErodeLand();
-        CreateClimate();
-        CreateRivers();
         CreateBuff();
         SetTerrainType();
+        CreateHero();
+        // CreateLand();
+        ErodeLand();
+        // CreateClimate();
+        // CreateRivers();
+
 
         for (int i = 0; i < cellCount; i++)
         {
@@ -233,6 +235,17 @@ public class HexMapGenerator : MonoBehaviour
 
 
         Random.state = originalRandomState;
+    }
+
+
+    void CreateHero()
+    {
+        HexCell firstCell = GetRandomCell(regions[0]);
+
+        if (HexGameUI.Instrance.selectedUnit == null)
+        {
+            HexGameUI.Instrance.selectedUnit = CreateHero(firstCell);
+        }
     }
 
 
@@ -288,6 +301,13 @@ public class HexMapGenerator : MonoBehaviour
         grid.AddUnit(
             createHero, cell, Random.Range(0f, 360f)
         );
+
+        List<HexCell> erodibleCells = ListPool<HexCell>.Get();
+        for (int i = 0; i < cellCount; i++)
+        {
+            HexCell cell1 = grid.GetCell(i);
+            cell1.Elevation = 1;
+        }
         return createHero;
     }
 
@@ -301,8 +321,9 @@ public class HexMapGenerator : MonoBehaviour
             if (i % 10 == 3)
             {
                 // grid.GetCell(i).Unit = Instantiate<MonsterBase>(monster);
+                HexUnit monsterUnit = Instantiate<MonsterBase>(monster);
                 grid.AddUnit(
-                    Instantiate<MonsterBase>(monster), grid.GetCell(i), Random.Range(0f, 360f)
+                    monsterUnit, grid.GetCell(i), Random.Range(0f, 360f)
                 );
             }
         }
@@ -853,14 +874,14 @@ public class HexMapGenerator : MonoBehaviour
                     return 0;
                 }
 
-                if (minNeighborElevation >= cell.Elevation)
-                {
-                    cell.WaterLevel = minNeighborElevation;
-                    if (minNeighborElevation == cell.Elevation)
-                    {
-                        cell.Elevation = minNeighborElevation - 1;
-                    }
-                }
+                // if (minNeighborElevation >= cell.Elevation)
+                // {
+                //     cell.WaterLevel = minNeighborElevation;
+                //     if (minNeighborElevation == cell.Elevation)
+                //     {
+                //         cell.Elevation = minNeighborElevation - 1;
+                //     }
+                // }
                 break;
             }
 
@@ -1057,10 +1078,10 @@ public class HexMapGenerator : MonoBehaviour
         temperature *= 1f - (cell.ViewElevation - waterLevel) /
             (elevationMaximum - waterLevel + 1f);
 
-        float jitter =
-            HexMetrics.SampleNoise(cell.Position * 0.1f)[temperatureJitterChannel];
-
-        temperature += (jitter * 2f - 1f) * temperatureJitter;
+        // float jitter =
+        //     HexMetrics.SampleNoise(cell.Position * 0.1f)[temperatureJitterChannel];
+        //
+        // temperature += (jitter * 2f - 1f) * temperatureJitter;
 
         return temperature;
     }

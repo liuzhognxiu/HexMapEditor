@@ -63,6 +63,7 @@ public class HexGrid : MonoBehaviour
         unit.Grid = this;
         unit.Location = location;
         unit.Orientation = orientation;
+        location.Unit = unit;
     }
 
     public void RemoveUnit(HexUnit unit)
@@ -452,15 +453,18 @@ public class HexGrid : MonoBehaviour
 
             for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
+
                 HexCell neighbor = current.GetNeighbor(d);
-                if (
-                    (neighbor == null ||
-                    neighbor.SearchPhase > searchFrontierPhase )
-                )
+                if (neighbor == null || neighbor.SearchPhase > searchFrontierPhase)
                 {
-                    //|| (neighbor.Buff != null && neighbor.Buff.bufftype != toCell.Buff.bufftype)
                     continue;
                 }
+
+                if (neighbor.Buff != null && toCell.Buff != null && neighbor.Buff.bufftype != toCell.Buff.bufftype)
+                {
+                    continue;
+                }
+
                 if (!unit.IsValidDestination(neighbor))
                 {
                     continue;
