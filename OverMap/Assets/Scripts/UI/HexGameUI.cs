@@ -43,7 +43,8 @@ public class HexGameUI : MonoBehaviour
                 if (Input.GetMouseButtonDown(1))
                 {
                     DoMove();
-                    DoAttack();
+                    selectedUnit.PathfindOverBack = DoAttack;
+                    // DoAttack();
                 }
                 else
                 {
@@ -81,16 +82,18 @@ public class HexGameUI : MonoBehaviour
 
     void DoAttack()
     {
-        
-        if (m_CurrentCell && m_CurrentCell.Unit.isMonster)
+
+        if (m_CurrentCell && m_CurrentCell.Unit && m_CurrentCell.Unit.isMonster)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                if (selectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)
-                {
-                    selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
-                }
-            }
+            // Debug.Log(selectedUnit.gameObject.name);
+            selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
+            // for (int i = 0; i < 6; i++)
+            // {
+            //     if (selectedUnit.Location.GetNeighbor((HexDirection)i) == m_CurrentCell)
+            //     {
+            //         selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
+            //     }
+            // }
         }
 
     }

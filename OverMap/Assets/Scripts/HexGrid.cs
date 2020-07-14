@@ -455,9 +455,10 @@ public class HexGrid : MonoBehaviour
                 HexCell neighbor = current.GetNeighbor(d);
                 if (
                     (neighbor == null ||
-                    neighbor.SearchPhase > searchFrontierPhase)
+                    neighbor.SearchPhase > searchFrontierPhase )
                 )
                 {
+                    //|| (neighbor.Buff != null && neighbor.Buff.bufftype != toCell.Buff.bufftype)
                     continue;
                 }
                 if (!unit.IsValidDestination(neighbor))

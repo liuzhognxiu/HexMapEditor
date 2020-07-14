@@ -25,13 +25,13 @@ namespace Assets.Scripts.Unit
             speed = unitBase.speed;
             visionRange = isFly ? 5 : 3;
 
-            PathfindOverBack = OverPath;
+            // PathfindOverBack = OverPath;
         }
 
-        private void OverPath()
-        {
-            Debug.Log("英雄怒吼！！！！！！！！！");
-        }
+        // private void OverPath()
+        // {
+        //     Debug.Log("英雄怒吼！！！！！！！！！");
+        // }
 
         public override void Travel(List<HexCell> path)
         {
