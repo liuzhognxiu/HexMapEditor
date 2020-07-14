@@ -45,8 +45,8 @@ namespace Assets.Scripts.Unit
 
         public override void Attack(HeroBase monster)
         {
-            unitBase.hp -= (monster.attack > unitBase.def) ? monster.attack - unitBase.def : 0;
-            monster.hp -= (unitBase.attack > monster.def) ? unitBase.attack - monster.def : 0;
+            unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
+            monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
             Debug.Log("英雄所剩血量：" + unitBase.hp);
             Debug.Log("怪物所剩血量：" + monster.hp);
             if (monster.hp <= 0)
@@ -169,7 +169,6 @@ namespace Assets.Scripts.Unit
 
         void AddBuff(HexCell cell)
         {
-            Debug.Log("!!!!!!!!!");
             cell.Buff?.OnEnter();
         }
     }

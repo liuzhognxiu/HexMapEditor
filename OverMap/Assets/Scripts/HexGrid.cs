@@ -464,6 +464,7 @@ public class HexGrid : MonoBehaviour
                 {
                     continue;
                 }
+
                 int moveCost = unit.isFly ? 5 : unit.GetMoveCost(current, neighbor, d);
                 if (moveCost < 0)
                 {

@@ -118,6 +118,24 @@ public class HexMapGenerator : MonoBehaviour
     public float highTemperature = 1f;
 
 
+    [Range(0f, 0.25f)]
+    [Header("攻击buff出现的概率")]
+    public float AttackBuffProbability = 0.25f;
+
+    [Range(0f, 0.25f)]
+    [Header("防御buff出现的概率")]
+    public float DefBuffProbability = 0.25f;
+
+    [Range(0f, 0.25f)]
+    [Header("回复血量buff出现的概率")]
+    public float HPBuffProbability = 0.25f;
+
+    [Range(0f, 0.25f)]
+    [Header("事件buff出现的概率")]
+    public float EventBuffProbability = 0.1f;
+
+
+
     public MonsterBase monster;
     public TestHero hero;
     public enum HemisphereMode
@@ -205,8 +223,8 @@ public class HexMapGenerator : MonoBehaviour
         ErodeLand();
         CreateClimate();
         CreateRivers();
-        SetTerrainType();
         CreateBuff();
+        SetTerrainType();
 
         for (int i = 0; i < cellCount; i++)
         {
@@ -222,18 +240,55 @@ public class HexMapGenerator : MonoBehaviour
     {
         // for (int j = 0; j < (int)Bufftype.RecoverBlood; j++)
         // {
-            for (int i = 0; i < cellCount; i++)
+        for (int i = 0; i < cellCount; i++)
+        {
+            if (grid.GetCell(i).Unit == null)
             {
-                if (grid.GetCell(i).Unit == null)
+                if (grid.GetCell(i).Buff == null)
                 {
-                    if (grid.GetCell(i).Buff == null)
+                    float value = Random.value;
+                    if (value < AttackBuffProbability)
                     {
-                        grid.GetCell(i).Buff = new AttackBuff();
-                        grid.GetCell(i).Buff.bufftype = Bufftype.Attack;
+                        grid.GetCell(i).Buff = new AttackBuff
+                        {
+                            bufftype = Bufftype.Attack
+                        };
                     }
+                    else if (value < DefBuffProbability + AttackBuffProbability && value >= AttackBuffProbability)
+                    {
+                        grid.GetCell(i).Buff = new DefendBuff()
+                        {
+                            bufftype = Bufftype.Defend
+                        };
+                    }
+                    else if (value < DefBuffProbability + AttackBuffProbability + HPBuffProbability && value >= DefBuffProbability + AttackBuffProbability)
+                    {
+                        grid.GetCell(i).Buff = new HPBuff()
+                        {
+                            bufftype = Bufftype.RecoverBlood
+                        };
+                    }
+                    else if (value < 1 && value >= DefBuffProbability + AttackBuffProbability + HPBuffProbability)
+                    {
+                        grid.GetCell(i).Buff = new EventBuff()
+                        {
+                            bufftype = Bufftype.None
+                        };
+                    }
+
                 }
             }
+        }
         // }
+    }
+
+    HexUnit CreateHero(HexCell cell)
+    {
+        HexUnit createHero = Instantiate<TestHero>(hero);
+        grid.AddUnit(
+            createHero, cell, Random.Range(0f, 360f)
+        );
+        return createHero;
     }
 
     /// <summary>
@@ -375,6 +430,13 @@ public class HexMapGenerator : MonoBehaviour
     {
         searchFrontierPhase += 1;
         HexCell firstCell = GetRandomCell(region);
+
+        //todo 测试使用生成默认的英雄
+        if (HexGameUI.Instrance.selectedUnit == null)
+        {
+            HexGameUI.Instrance.selectedUnit = CreateHero(firstCell);
+        }
+
         firstCell.SearchPhase = searchFrontierPhase;
         firstCell.Distance = 0;
         firstCell.SearchHeuristic = 0;
@@ -423,9 +485,6 @@ public class HexMapGenerator : MonoBehaviour
     {
         searchFrontierPhase += 1;
         HexCell firstCell = GetRandomCell(region);
-        grid.AddUnit(
-            Instantiate<TestHero>(hero), firstCell, Random.Range(0f, 360f)
-        );
         firstCell.SearchPhase = searchFrontierPhase;
         firstCell.Distance = 0;
         firstCell.SearchHeuristic = 0;
@@ -835,116 +894,145 @@ public class HexMapGenerator : MonoBehaviour
         for (int i = 0; i < cellCount; i++)
         {
             HexCell cell = grid.GetCell(i);
-            float temperature = DetermineTemperature(cell);
-            float moisture = climate[i].moisture;
-            if (!cell.IsUnderwater)
-            {
-                int t = 0;
-                for (; t < temperatureBands.Length; t++)
-                {
-                    if (temperature < temperatureBands[t])
-                    {
-                        break;
-                    }
-                }
-                int m = 0;
-                for (; m < moistureBands.Length; m++)
-                {
-                    if (moisture < moistureBands[m])
-                    {
-                        break;
-                    }
-                }
-                //隐藏植被的生成
-                // Biome cellBiome = biomes[t * 4 + m];
-                //
-                // if (cellBiome.terrain == 0)
-                // {
-                //     if (cell.Elevation >= rockDesertElevation)
-                //     {
-                //         cellBiome.terrain = 3;
-                //     }
-                // }
-                // else if (cell.Elevation == elevationMaximum)
-                // {
-                //     cellBiome.terrain = 4;
-                // }
-                //
-                // if (cellBiome.terrain == 4)
-                // {
-                //     cellBiome.plant = 0;
-                // }
-                // else if (cellBiome.plant < 3 && cell.HasRiver)
-                // {
-                //     cellBiome.plant += 1;
-                // }
-                //
-                // cell.TerrainTypeIndex = cellBiome.terrain;
-                // cell.PlantLevel = cellBiome.plant;
-            }
-            else
-            {
-                int terrain;
-                if (cell.Elevation == waterLevel - 1)
-                {
-                    int cliffs = 0, slopes = 0;
-                    for (
-                        HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++
-                    )
-                    {
-                        HexCell neighbor = cell.GetNeighbor(d);
-                        if (!neighbor)
-                        {
-                            continue;
-                        }
-                        int delta = neighbor.Elevation - cell.WaterLevel;
-                        if (delta == 0)
-                        {
-                            slopes += 1;
-                        }
-                        else if (delta > 0)
-                        {
-                            cliffs += 1;
-                        }
-                    }
-
-                    if (cliffs + slopes > 3)
-                    {
-                        terrain = 1;
-                    }
-                    else if (cliffs > 0)
-                    {
-                        terrain = 3;
-                    }
-                    else if (slopes > 0)
-                    {
-                        terrain = 0;
-                    }
-                    else
-                    {
-                        terrain = 1;
-                    }
-                }
-                else if (cell.Elevation >= waterLevel)
-                {
-                    terrain = 1;
-                }
-                else if (cell.Elevation < 0)
-                {
-                    terrain = 3;
-                }
-                else
-                {
-                    terrain = 2;
-                }
-
-                if (terrain == 1 && temperature < temperatureBands[0])
-                {
-                    terrain = 2;
-                }
-                cell.TerrainTypeIndex = terrain;
-            }
+            cell.TerrainTypeIndex = GetTerrain(cell);
+            // continue;
+            // float temperature = DetermineTemperature(cell);
+            // float moisture = climate[i].moisture;
+            // if (!cell.IsUnderwater)
+            // {
+            //     int t = 0;
+            //     for (; t < temperatureBands.Length; t++)
+            //     {
+            //         if (temperature < temperatureBands[t])
+            //         {
+            //             break;
+            //         }
+            //     }
+            //     int m = 0;
+            //     for (; m < moistureBands.Length; m++)
+            //     {
+            //         if (moisture < moistureBands[m])
+            //         {
+            //             break;
+            //         }
+            //     }
+            //     // 隐藏植被的生成
+            //      Biome cellBiome = biomes[t * 4 + m];
+            //     
+            //      if (cellBiome.terrain == 0)
+            //      {
+            //          if (cell.Elevation >= rockDesertElevation)
+            //          {
+            //              cellBiome.terrain = 3;
+            //          }
+            //      }
+            //      else if (cell.Elevation == elevationMaximum)
+            //      {
+            //          cellBiome.terrain = 4;
+            //      }
+            //     
+            //      if (cellBiome.terrain == 4)
+            //      {
+            //          cellBiome.plant = 0;
+            //      }
+            //      else if (cellBiome.plant < 3 && cell.HasRiver)
+            //      {
+            //          cellBiome.plant += 1;
+            //      }
+            //     
+            //      cell.TerrainTypeIndex = cellBiome.terrain;
+            //      cell.PlantLevel = cellBiome.plant;
+            // }
+            // else
+            // {
+            //     int terrain;
+            //     if (cell.Elevation == waterLevel - 1)
+            //     {
+            //         int cliffs = 0, slopes = 0;
+            //         for (
+            //             HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++
+            //         )
+            //         {
+            //             HexCell neighbor = cell.GetNeighbor(d);
+            //             if (!neighbor)
+            //             {
+            //                 continue;
+            //             }
+            //             int delta = neighbor.Elevation - cell.WaterLevel;
+            //             if (delta == 0)
+            //             {
+            //                 slopes += 1;
+            //             }
+            //             else if (delta > 0)
+            //             {
+            //                 cliffs += 1;
+            //             }
+            //         }
+            //
+            //         if (cliffs + slopes > 3)
+            //         {
+            //             terrain = 1;
+            //         }
+            //         else if (cliffs > 0)
+            //         {
+            //             terrain = 3;
+            //         }
+            //         else if (slopes > 0)
+            //         {
+            //             terrain = 0;
+            //         }
+            //         else
+            //         {
+            //             terrain = 1;
+            //         }
+            //     }
+            //     else if (cell.Elevation >= waterLevel)
+            //     {
+            //         terrain = 1;
+            //     }
+            //     else if (cell.Elevation < 0)
+            //     {
+            //         terrain = 3;
+            //     }
+            //     else
+            //     {
+            //         terrain = 2;
+            //     }
+            //
+            //     if (terrain == 1 && temperature < temperatureBands[0])
+            //     {
+            //         terrain = 2;
+            //     }
+            //
+            //
+            //
+            //
+            //     cell.TerrainTypeIndex = terrain;
+            // }
         }
+    }
+
+    int GetTerrain(HexCell cell)
+    {
+        int terrain = 0;
+        if (cell.Buff != null)
+            switch (cell.Buff.bufftype)
+            {
+                case Bufftype.Attack:
+                    terrain = 4;
+                    break;
+                case Bufftype.RecoverBlood:
+                    terrain = 3;
+                    break;
+                case Bufftype.Defend:
+                    terrain = 2;
+                    break;
+                case Bufftype.None:
+                    terrain = 1;
+                    break;
+            }
+
+        return terrain;
     }
 
     float DetermineTemperature(HexCell cell)

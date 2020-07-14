@@ -16,7 +16,7 @@ namespace Assets.Scripts.Monster
             {
                 attack = 1,
                 speed = 0,
-                def = 3,
+                defend = 3,
                 unit  = this,
             };
         }

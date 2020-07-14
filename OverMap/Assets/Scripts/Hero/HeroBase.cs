@@ -10,7 +10,7 @@ namespace Assets.Scripts.Hero
     {
         public int attack = 10;
 
-        public int def = 3;
+        public int defend = 3;
 
         public int speed = 24;
 
