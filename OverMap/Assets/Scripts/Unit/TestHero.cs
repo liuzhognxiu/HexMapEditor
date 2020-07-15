@@ -50,7 +50,7 @@ namespace Assets.Scripts.Unit
 
         public override void Attack(HeroBase monster)
         {
-            while (monster.hp >= 0)
+            while (monster.hp > 0)
             {
                 unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
                 monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;

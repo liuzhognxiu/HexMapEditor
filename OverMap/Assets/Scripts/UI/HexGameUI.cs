@@ -53,6 +53,7 @@ public class HexGameUI : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
                     SelectAttackTarget();
+                    DoMove();
                 }
             }
 
