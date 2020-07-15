@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Linq;
 using Assets.Scripts.Buff;
 
 public class HexCell : MonoBehaviour {
@@ -306,7 +307,12 @@ public class HexCell : MonoBehaviour {
 	[SerializeField]
 	bool[] roads;
 
-	public void IncreaseVisibility () {
+    public bool GetIsNeighbor(HexCell cell)
+    {
+        return neighbors.Contains(cell);
+    }
+
+    public void IncreaseVisibility () {
 		visibility += 1;
 		if (visibility == 1) {
 			IsExplored = true;
@@ -468,9 +474,9 @@ public class HexCell : MonoBehaviour {
 	void RefreshPosition () {
 		Vector3 position = transform.localPosition;
 		position.y = elevation * HexMetrics.elevationStep;
-		position.y +=
-			(HexMetrics.SampleNoise(position).y * 2f - 1f) *
-			HexMetrics.elevationPerturbStrength;
+		// position.y +=
+		// 	(HexMetrics.SampleNoise(position).y * 2f - 1f) *
+		// 	HexMetrics.elevationPerturbStrength;
 		transform.localPosition = position;
 
 		Vector3 uiPosition = uiRect.localPosition;

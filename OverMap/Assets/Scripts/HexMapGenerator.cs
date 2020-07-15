@@ -217,11 +217,11 @@ public class HexMapGenerator : MonoBehaviour
         {
             grid.GetCell(i).WaterLevel = waterLevel;
         }
-        CreateMonster();
         CreateRegions();
         CreateBuff();
         SetTerrainType();
         CreateHero();
+        CreateMonster();
         // CreateLand();
         ErodeLand();
         // CreateClimate();
@@ -302,7 +302,6 @@ public class HexMapGenerator : MonoBehaviour
             createHero, cell, Random.Range(0f, 360f)
         );
 
-        List<HexCell> erodibleCells = ListPool<HexCell>.Get();
         for (int i = 0; i < cellCount; i++)
         {
             HexCell cell1 = grid.GetCell(i);
@@ -325,6 +324,7 @@ public class HexMapGenerator : MonoBehaviour
                 grid.AddUnit(
                     monsterUnit, grid.GetCell(i), Random.Range(0f, 360f)
                 );
+                grid.GetCell(i).Unit.ValidateLocation();
             }
         }
     }

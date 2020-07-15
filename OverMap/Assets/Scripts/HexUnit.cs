@@ -13,6 +13,8 @@ public class HexUnit : MonoBehaviour
 
     public static HexUnit unitPrefab;
 
+    public HexUnit attackHexUnit;
+
     public bool isCanSelect = true;
 
     public bool isFly = false;

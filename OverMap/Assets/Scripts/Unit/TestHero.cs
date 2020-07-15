@@ -16,6 +16,7 @@ namespace Assets.Scripts.Unit
     {
         public float flyHight = 5;
 
+
         void Start()
         {
             unitBase = new HeroBase
@@ -25,13 +26,17 @@ namespace Assets.Scripts.Unit
             speed = unitBase.speed;
             visionRange = isFly ? 5 : 3;
 
-            // PathfindOverBack = OverPath;
+            PathfindOverBack = OverPath;
         }
 
-        // private void OverPath()
-        // {
-        //     Debug.Log("英雄怒吼！！！！！！！！！");
-        // }
+        private void OverPath()
+        {
+            if (attackHexUnit!=null && attackHexUnit.unitBase != null)
+            {
+                Attack(attackHexUnit.unitBase);
+            }
+            Debug.Log("英雄怒吼！！！！！！！！！");
+        }
 
         public override void Travel(List<HexCell> path)
         {
@@ -51,7 +56,7 @@ namespace Assets.Scripts.Unit
                 monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
                 Debug.Log("英雄所剩血量：" + unitBase.hp);
                 Debug.Log("怪物所剩血量：" + monster.hp);
-              
+
             }
             if (monster.hp <= 0)
             {
