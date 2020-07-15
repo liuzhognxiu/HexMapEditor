@@ -34,7 +34,10 @@ public class HexGrid : MonoBehaviour
 
     int chunkCountX, chunkCountZ;
 
-    HexCellPriorityQueue searchFrontier;
+    /// <summary>
+    /// 寻路队列
+    /// </summary>
+    public HexCellPriorityQueue searchFrontier;
 
     int searchFrontierPhase;
 
@@ -397,9 +400,29 @@ public class HexGrid : MonoBehaviour
         currentPathFrom = currentPathTo = null;
     }
 
-    void ShowPath(int speed)
+    public void ShowPath(int speed)
     {
         if (currentPathExists)
+        {
+            HexCell current = currentPathTo;
+            while (current != currentPathFrom)
+            {
+                int turn = (current.Distance - 1) / speed;
+                current.SetLabel(turn.ToString());
+                current.EnableHighlight(Color.white);
+                current = current.PathFrom;
+            }
+        }
+        currentPathFrom.EnableHighlight(Color.blue);
+        currentPathTo.EnableHighlight(Color.red);
+    }
+
+    public void ShowPath(int speed,HexCell toCell, HexCell fromCell,bool showPath = false)
+    {
+        currentPathFrom = fromCell;
+        currentPathTo = toCell;
+        currentPathExists = showPath;
+        if (showPath)
         {
             HexCell current = currentPathTo;
             while (current != currentPathFrom)

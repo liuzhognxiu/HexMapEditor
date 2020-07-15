@@ -12,6 +12,8 @@ public class HexGameUI : MonoBehaviour
 
     public HexUnit selectedUnit;
 
+
+
     void Awake()
     {
         Instrance = this;
@@ -42,13 +44,13 @@ public class HexGameUI : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(1))
                 {
-                    DoMove();
+                    AddSearchFrontier();
                     // DoAttack();
                 }
-                else
-                {
-                    DoPathfinding();
-                }
+                // else
+                // {
+                //     DoPathfinding();
+                // }
 
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
@@ -60,6 +62,29 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
+    private HexCell m_TempHexCell;
+
+    void AddSearchFrontier()
+    {
+        if (UpdateCurrentCell())
+        {
+            if (m_TempHexCell)
+            {
+                if (selectedUnit.IsValidDestination(m_TempHexCell) &&
+                    selectedUnit.Location.GetIsNeighbor(m_TempHexCell))
+                {
+                    grid.searchFrontier.Enqueue(m_CurrentCell);
+                    m_TempHexCell = m_CurrentCell;
+                }
+            }
+            else if (m_CurrentCell && selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
+            {
+                grid.searchFrontier.Enqueue(m_CurrentCell);
+                m_TempHexCell = m_CurrentCell;
+            }
+        }
+        grid.ShowPath(selectedUnit.speed, m_TempHexCell, selectedUnit.Location,true);
+    }
 
     void SelectAttackTarget()
     {
