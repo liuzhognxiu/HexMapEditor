@@ -36,6 +36,8 @@ namespace Assets.Scripts.Unit
                 Attack(attackHexUnit.unitBase);
             }
             Debug.Log("英雄怒吼！！！！！！！！！");
+            Grid.UnEnableHight();
+
         }
 
         public override void Travel(List<HexCell> path)
@@ -97,8 +99,9 @@ namespace Assets.Scripts.Unit
             if (!m_CurrentTravelLocation)
             {
                 m_CurrentTravelLocation = _pathToTravel[0];
+                m_CurrentTravelLocation.DisableHighlight();
             }
-            Grid.DecreaseVisibility(m_CurrentTravelLocation, visionRange);
+            // Grid.DecreaseVisibility(m_CurrentTravelLocation, visionRange);
             int currentColumn = m_CurrentTravelLocation.ColumnIndex;
 
             float t = Time.deltaTime * kTravelSpeed;
@@ -126,7 +129,7 @@ namespace Assets.Scripts.Unit
                 }
 
                 c = (b + m_CurrentTravelLocation.Position) * 0.5f;
-                Grid.IncreaseVisibility(_pathToTravel[i], visionRange);
+                // Grid.IncreaseVisibility(_pathToTravel[i], visionRange);
 
                 for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
                 {
@@ -139,9 +142,12 @@ namespace Assets.Scripts.Unit
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;
                 }
-                Grid.DecreaseVisibility(_pathToTravel[i], visionRange);
+                // Grid.DecreaseVisibility(_pathToTravel[i], visionRange);
                 t -= 1f;
+                _pathToTravel[i].DisableHighlight();
             }
+
+            
             m_CurrentTravelLocation = null;
 
             a = c;

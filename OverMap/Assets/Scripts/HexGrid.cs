@@ -39,6 +39,9 @@ public class HexGrid : MonoBehaviour
     /// </summary>
     public HexCellPriorityQueue searchFrontier;
 
+    public List<HexCell> showhexCells = new List<HexCell>();
+
+
     int searchFrontierPhase;
 
     HexCell currentPathFrom, currentPathTo;
@@ -417,24 +420,22 @@ public class HexGrid : MonoBehaviour
         currentPathTo.EnableHighlight(Color.red);
     }
 
-    public void ShowPath(int speed,HexCell toCell, HexCell fromCell,bool showPath = false)
+
+    public void ShowPath(int speed, HexCell toCell, HexCell fromCell, bool showPath = false)
     {
-        currentPathFrom = fromCell;
-        currentPathTo = toCell;
-        currentPathExists = showPath;
-        if (showPath)
+        for (int i = 0; i < showhexCells.Count; i++)
         {
-            HexCell current = currentPathTo;
-            while (current != currentPathFrom)
-            {
-                int turn = (current.Distance - 1) / speed;
-                current.SetLabel(turn.ToString());
-                current.EnableHighlight(Color.white);
-                current = current.PathFrom;
-            }
+            showhexCells[i].EnableHighlight(Color.red);
+            showhexCells[i].SetLabel(i.ToString());
         }
-        currentPathFrom.EnableHighlight(Color.blue);
-        currentPathTo.EnableHighlight(Color.red);
+    }
+
+    public void UnEnableHight()
+    {
+        for (int i = 0; i < showhexCells.Count; i++)
+        {
+            showhexCells[i].DisableHighlight();
+        }
     }
 
     public void FindPath(HexCell fromCell, HexCell toCell, HexUnit unit)
@@ -445,6 +446,7 @@ public class HexGrid : MonoBehaviour
         currentPathExists = Search(fromCell, toCell, unit);
         ShowPath(unit.speed);
     }
+
 
     bool Search(HexCell fromCell, HexCell toCell, HexUnit unit)
     {

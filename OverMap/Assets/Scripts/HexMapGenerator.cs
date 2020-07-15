@@ -218,11 +218,12 @@ public class HexMapGenerator : MonoBehaviour
             grid.GetCell(i).WaterLevel = waterLevel;
         }
         CreateRegions();
-        SetTerrainType();
         //创建英雄和怪物之后，生成除了英雄和怪物格子外的所有cell都为buff格子
+        // CreateMonster();
         CreateHero();
-        CreateMonster();
         CreateBuff();
+        SetTerrainType();
+
         // CreateLand();
         ErodeLand();
         // CreateClimate();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class HexGameUI : MonoBehaviour
@@ -62,28 +63,38 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
-    private HexCell m_TempHexCell;
 
     void AddSearchFrontier()
     {
-        if (UpdateCurrentCell())
+
+        if (UpdateCurrentCell() && m_CurrentCell)
         {
-            if (m_TempHexCell)
+            if (grid.showhexCells.Count != 0)
             {
-                if (selectedUnit.IsValidDestination(m_TempHexCell) &&
-                    selectedUnit.Location.GetIsNeighbor(m_TempHexCell))
+                if (
+                    selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
+                    grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
+                    grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype
+                    )
                 {
-                    grid.searchFrontier.Enqueue(m_CurrentCell);
-                    m_TempHexCell = m_CurrentCell;
+                    if (!grid.showhexCells.Contains(m_CurrentCell))
+                    {
+                        grid.showhexCells.Add(m_CurrentCell);
+                    }
                 }
             }
-            else if (m_CurrentCell && selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
+            else if (selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
             {
-                grid.searchFrontier.Enqueue(m_CurrentCell);
-                m_TempHexCell = m_CurrentCell;
+                grid.showhexCells.Add(selectedUnit.Location);
+                if (!grid.showhexCells.Contains(m_CurrentCell))
+                {
+                    grid.showhexCells.Add(m_CurrentCell);
+                }
             }
+            grid.ShowPath(selectedUnit.speed, m_CurrentCell, selectedUnit.Location, true);
+
         }
-        grid.ShowPath(selectedUnit.speed, m_TempHexCell, selectedUnit.Location,true);
+
     }
 
     void SelectAttackTarget()
@@ -116,7 +127,7 @@ public class HexGameUI : MonoBehaviour
             if (m_CurrentCell && selectedUnit.IsValidDestination(m_CurrentCell))
             {
                 grid.FindPath(selectedUnit.Location, m_CurrentCell, selectedUnit);
-              
+
             }
             else
             {
@@ -137,11 +148,7 @@ public class HexGameUI : MonoBehaviour
 
     void DoMove()
     {
-        if (grid.HasPath)
-        {
-            selectedUnit.Travel(grid.GetPath());
-            grid.ClearPath();
-        }
+        selectedUnit.Travel(grid.showhexCells);
     }
 
     bool UpdateCurrentCell()

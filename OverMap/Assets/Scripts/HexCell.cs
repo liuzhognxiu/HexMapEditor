@@ -590,6 +590,8 @@ public class HexCell : MonoBehaviour {
 	public void DisableHighlight () {
 		Image highlight = uiRect.GetChild(0).GetComponent<Image>();
 		highlight.enabled = false;
+        Text label = uiRect.GetComponent<Text>();
+        label.text = "";
 	}
 
 	public void EnableHighlight (Color color) {
