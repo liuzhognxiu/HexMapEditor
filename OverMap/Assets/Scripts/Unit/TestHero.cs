@@ -31,13 +31,11 @@ namespace Assets.Scripts.Unit
 
         private void OverPath()
         {
-            if (attackHexUnit!=null && attackHexUnit.unitBase != null)
+            if (attackHexUnit != null && attackHexUnit.unitBase != null)
             {
                 Attack(attackHexUnit.unitBase);
             }
             Debug.Log("英雄怒吼！！！！！！！！！");
-            Grid.UnEnableHight();
-
         }
 
         public override void Travel(List<HexCell> path)
@@ -86,10 +84,7 @@ namespace Assets.Scripts.Unit
             return new Vector3(position.x, y, position.z);
         }
 
-        //这里实现可以飞行的英雄的寻路
-        //飞行英雄根据起点位置坐标飞行高度，飞往对应的cell，到达指定的cell上空下落到高于地面的位置 
-        //永远在水平面以上
-        //TODO 需要调整飞跃高山或者飞翔高山，高山飞翔平原降落的动画，需要修改飞往高山提前格子起飞
+
         public override IEnumerator TravelPath()
         {
             float flyPositionY = _pathToTravel[0].Position.y + flyHight;
@@ -99,7 +94,8 @@ namespace Assets.Scripts.Unit
             if (!m_CurrentTravelLocation)
             {
                 m_CurrentTravelLocation = _pathToTravel[0];
-                m_CurrentTravelLocation.DisableHighlight();
+                //走过的路程点
+                RefreshCell(m_CurrentTravelLocation);
             }
             // Grid.DecreaseVisibility(m_CurrentTravelLocation, visionRange);
             int currentColumn = m_CurrentTravelLocation.ColumnIndex;
@@ -144,10 +140,10 @@ namespace Assets.Scripts.Unit
                 }
                 // Grid.DecreaseVisibility(_pathToTravel[i], visionRange);
                 t -= 1f;
-                _pathToTravel[i].DisableHighlight();
+                RefreshCell(_pathToTravel[i]);
             }
 
-            
+
             m_CurrentTravelLocation = null;
 
             a = c;
@@ -176,10 +172,18 @@ namespace Assets.Scripts.Unit
                 transform.localPosition = m_Location.Position + new Vector3(0, flyHight, 0);
             }
             Orientation = transform.localRotation.eulerAngles.y;
-            ListPool<HexCell>.Add(_pathToTravel);
+            Grid.UnEnableHight();
 
-            _pathToTravel = null;
+            ListPool<HexCell>.Add(_pathToTravel);
             PathfindOverBack.Invoke();
+            _pathToTravel = null;
+        }
+
+        void RefreshCell(HexCell cell)
+        {
+            cell.DisableHighlight();
+            cell.Buff = HexMapGenerator.Instrance.getBuffBase(cell);
+            cell.TerrainTypeIndex = HexMapGenerator.Instrance.GetTerrain(cell);
         }
 
         void AddBuff(HexCell cell)

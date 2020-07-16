@@ -434,7 +434,7 @@ public class HexGrid : MonoBehaviour
     {
         for (int i = 0; i < showhexCells.Count; i++)
         {
-            showhexCells[i].DisableHighlight();
+            showhexCells[i].Buff =  HexMapGenerator.Instrance.getBuffBase(showhexCells[i]);
         }
     }
 

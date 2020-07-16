@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
 
 public class HexMapGenerator : MonoBehaviour
 {
+    public static HexMapGenerator Instrance;
 
     public HexGrid grid;
 
@@ -195,6 +196,11 @@ public class HexMapGenerator : MonoBehaviour
         new Biome(0, 0), new Biome(1, 1), new Biome(1, 2), new Biome(1, 3)
     };
 
+    void Awake()
+    {
+        Instrance = this;
+    }
+
     public void GenerateMap(int x, int z, bool wrapping)
     {
         Random.State originalRandomState = Random.state;
@@ -219,7 +225,7 @@ public class HexMapGenerator : MonoBehaviour
         }
         CreateRegions();
         //创建英雄和怪物之后，生成除了英雄和怪物格子外的所有cell都为buff格子
-        // CreateMonster();
+        CreateMonster();
         CreateHero();
         CreateBuff();
         SetTerrainType();
@@ -250,6 +256,47 @@ public class HexMapGenerator : MonoBehaviour
         }
     }
 
+
+    public BuffBase getBuffBase(HexCell cell)
+    {
+        BuffBase buffBase = null;
+        cell.Buff = null;
+        if (cell.Unit == null)
+        {
+            float value = Random.value;
+            if (value < AttackBuffProbability)
+            {
+                buffBase = new AttackBuff
+                {
+                    bufftype = Bufftype.Attack
+                };
+            }
+            else if (value < DefBuffProbability + AttackBuffProbability && value >= AttackBuffProbability)
+            {
+                buffBase = new DefendBuff()
+                {
+                    bufftype = Bufftype.Defend
+                };
+            }
+            else if (value < DefBuffProbability + AttackBuffProbability + HPBuffProbability && value >= DefBuffProbability + AttackBuffProbability)
+            {
+                buffBase = new HPBuff()
+                {
+                    bufftype = Bufftype.RecoverBlood
+                };
+            }
+            else if (value < 1 && value >= DefBuffProbability + AttackBuffProbability + HPBuffProbability)
+            {
+                buffBase = new EventBuff()
+                {
+                    bufftype = Bufftype.None
+                };
+            }
+
+        }
+        Debug.Log(buffBase != null ? buffBase.bufftype.ToString() : "未添加buff类型");
+        return buffBase;
+    }
 
     void CreateBuff()
     {
@@ -1035,7 +1082,7 @@ public class HexMapGenerator : MonoBehaviour
         }
     }
 
-    int GetTerrain(HexCell cell)
+    public int GetTerrain(HexCell cell)
     {
         int terrain = 0;
         if (cell.Buff != null)
