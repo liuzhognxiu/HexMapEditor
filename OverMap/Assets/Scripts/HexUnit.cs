@@ -15,6 +15,8 @@ public class HexUnit : MonoBehaviour
 
     public HexUnit attackHexUnit;
 
+    public List<HexUnit> attackHexUnits;
+
     public bool isCanSelect = true;
 
     public bool isFly = false;

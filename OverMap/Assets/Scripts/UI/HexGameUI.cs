@@ -37,22 +37,16 @@ public class HexGameUI : MonoBehaviour
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                DoSelection();
-            }
-            else if (selectedUnit && selectedUnit.isCanSelect)
+            if (selectedUnit && selectedUnit.isCanSelect)
             {
                 if (Input.GetMouseButtonDown(1))
                 {
                     AddSearchFrontier();
-                    // DoAttack();
                 }
-                // else
-                // {
-                //     DoPathfinding();
-                // }
-
+                if (Input.GetMouseButtonDown(0))
+                {
+                    DeleteSearchFrontier();
+                }
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
                     SelectAttackTarget();
@@ -63,6 +57,17 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
+    void DeleteSearchFrontier()
+    {
+        HexCell cell =
+            grid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
+        if (cell == grid.showhexCells.Last())
+        {
+            grid.showhexCells.Last().DisableHighlight();
+            grid.showhexCells.Remove(grid.showhexCells.Last());
+            grid.ShowPath(selectedUnit.speed, m_CurrentCell, selectedUnit.Location, true);
+        }
+    }
 
     void AddSearchFrontier()
     {
@@ -99,14 +104,21 @@ public class HexGameUI : MonoBehaviour
 
     void SelectAttackTarget()
     {
+        // if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
+        // {
+        //     selectedUnit.attackHexUnit = m_CurrentCell.Unit;
+        // }
+        // else
+        // {
+        //     selectedUnit.attackHexUnit = null;
+        // }
+
         if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
         {
-            selectedUnit.attackHexUnit = m_CurrentCell.Unit;
-        }
-        else
-        {
-            selectedUnit.attackHexUnit = null;
-
+            if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
+            {
+                selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
+            }
         }
     }
 
