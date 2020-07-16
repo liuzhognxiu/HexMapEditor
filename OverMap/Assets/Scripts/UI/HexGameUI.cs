@@ -42,6 +42,8 @@ public class HexGameUI : MonoBehaviour
                 if (Input.GetMouseButtonDown(1))
                 {
                     AddSearchFrontier();
+                    SelectAttackTarget();
+
                 }
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -49,7 +51,6 @@ public class HexGameUI : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    SelectAttackTarget();
                     DoMove();
                 }
             }
@@ -61,7 +62,7 @@ public class HexGameUI : MonoBehaviour
     {
         HexCell cell =
             grid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
-        if (cell == grid.showhexCells.Last())
+        if (grid.showhexCells.Count > 0 && cell == grid.showhexCells.Last())
         {
             grid.showhexCells.Last().DisableHighlight();
             grid.showhexCells.Remove(grid.showhexCells.Last());
@@ -79,7 +80,7 @@ public class HexGameUI : MonoBehaviour
                 if (
                     selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
                     grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
-                    grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype
+                    (grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype || m_CurrentCell.Unit != null)
                     )
                 {
                     if (!grid.showhexCells.Contains(m_CurrentCell))
@@ -88,7 +89,7 @@ public class HexGameUI : MonoBehaviour
                     }
                 }
             }
-            else if (selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
+            else if ((selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell)))
             {
                 grid.showhexCells.Add(selectedUnit.Location);
                 if (!grid.showhexCells.Contains(m_CurrentCell))

@@ -31,10 +31,17 @@ namespace Assets.Scripts.Unit
 
         private void OverPath()
         {
-            if (attackHexUnit != null && attackHexUnit.unitBase != null)
+            for (int i = 0; i < attackHexUnits.Count; i++)
             {
-                Attack(attackHexUnit.unitBase);
+                if (attackHexUnits[i] != null && attackHexUnits[i].unitBase != null)
+                {
+                    Attack(attackHexUnits[i].unitBase);
+                }
             }
+            // if (attackHexUnit != null && attackHexUnit.unitBase != null)
+            // {
+            //     Attack(attackHexUnit.unitBase);
+            // }
             Debug.Log("英雄怒吼！！！！！！！！！");
         }
 

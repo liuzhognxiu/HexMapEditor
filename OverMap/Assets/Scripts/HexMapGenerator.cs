@@ -225,7 +225,7 @@ public class HexMapGenerator : MonoBehaviour
         }
         CreateRegions();
         //创建英雄和怪物之后，生成除了英雄和怪物格子外的所有cell都为buff格子
-        // CreateMonster();
+        CreateMonster();
         CreateHero();
         CreateBuff();
         SetTerrainType();
