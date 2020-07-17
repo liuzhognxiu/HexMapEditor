@@ -80,7 +80,7 @@ public class HexGameUI : MonoBehaviour
                 if (
                     selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
                     grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
-                    (grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype || m_CurrentCell.Unit != null)
+                    (m_CurrentCell.Unit != null || grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype)
                     )
                 {
                     if (!grid.showhexCells.Contains(m_CurrentCell))
@@ -113,11 +113,21 @@ public class HexGameUI : MonoBehaviour
         // {
         //     selectedUnit.attackHexUnit = null;
         // }
+        if (selectedUnit.attackHexUnits.Count > 0)
+        {
+            if (m_CurrentCell.Unit == null ||
+                !selectedUnit.attackHexUnits.Last().Location.GetIsNeighbor(m_CurrentCell)) return;
 
-        if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
+            if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
+            {
+                selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
+            }
+        }
+        else if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
         {
             if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
             {
+
                 selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
             }
         }
