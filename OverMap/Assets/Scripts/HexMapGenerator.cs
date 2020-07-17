@@ -289,7 +289,7 @@ public class HexMapGenerator : MonoBehaviour
             {
                 buffBase = new EventBuff()
                 {
-                    bufftype = Bufftype.None
+                    bufftype = Bufftype.Event
                 };
             }
 
@@ -334,7 +334,7 @@ public class HexMapGenerator : MonoBehaviour
                     {
                         grid.GetCell(i).Buff = new EventBuff()
                         {
-                            bufftype = Bufftype.None
+                            bufftype = Bufftype.Event
                         };
                     }
 
@@ -1090,7 +1090,7 @@ public class HexMapGenerator : MonoBehaviour
                 case Bufftype.Defend:
                     terrain = 2;
                     break;
-                case Bufftype.None:
+                case Bufftype.Event:
                     terrain = 1;
                     break;
             }

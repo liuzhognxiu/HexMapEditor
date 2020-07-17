@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Assets.Scripts.Buff;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -81,18 +82,34 @@ public class HexGameUI : MonoBehaviour
     }
 
 
+
     void AddSearchFrontier()
     {
+
 
         if (UpdateCurrentCell() && m_CurrentCell)
         {
             if (grid.showhexCells.Count != 0)
             {
+                BuffBase buff = new BuffBase();
+                for (int i = 0; i < grid.showhexCells.Count; i++)
+                {
+                    if (grid.showhexCells[i].Buff != null)
+                    {
+                        buff = grid.showhexCells[i].Buff;
+                        break;
+                    }
+                }
+
+                if (buff.bufftype == Bufftype.None)
+                {
+                    buff = m_CurrentCell.Buff;
+                }
+
                 if (
                     selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
                     grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
-                    (m_CurrentCell.Unit != null || grid.showhexCells[1].Buff.bufftype == m_CurrentCell.Buff.bufftype)
-                    )
+                    (m_CurrentCell.Unit != null || buff.bufftype == m_CurrentCell.Buff.bufftype))
                 {
                     if (!grid.showhexCells.Contains(m_CurrentCell))
                     {
@@ -137,7 +154,7 @@ public class HexGameUI : MonoBehaviour
                 selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
             }
         }
-        else if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell)) //todo 这里判断有问题，需要判断是当前路径下的下一个格子，而不是角色边上的下一个格子
+        else if (m_CurrentCell.Unit != null && grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)) //todo 这里判断有问题，需要判断是当前路径下的下一个格子，而不是角色边上的下一个格子
         {
             if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
             {

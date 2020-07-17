@@ -14,6 +14,7 @@ namespace Assets.Scripts.Buff
         Attack = 1,
         Defend = 2,
         RecoverBlood = 3,
+        Event = 4,
     }
 
     public interface IBuff
