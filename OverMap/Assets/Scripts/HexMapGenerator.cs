@@ -138,7 +138,7 @@ public class HexMapGenerator : MonoBehaviour
 
 
     public MonsterBase monster;
-    public TestHero hero;
+    public PlayerHero hero;
     public enum HemisphereMode
     {
         Both, North, South
@@ -346,7 +346,7 @@ public class HexMapGenerator : MonoBehaviour
 
     HexUnit CreateHero(HexCell cell)
     {
-        HexUnit createHero = Instantiate<TestHero>(hero);
+        HexUnit createHero = Instantiate<PlayerHero>(hero);
         grid.AddUnit(
             createHero, cell, Random.Range(0f, 360f)
         );

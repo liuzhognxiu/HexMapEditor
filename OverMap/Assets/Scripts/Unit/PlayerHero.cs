@@ -12,7 +12,7 @@ namespace Assets.Scripts.Unit
 #if UNITY_EDITOR
     [CustomEditor(typeof(HexUnit), true)]
 #endif
-    public class TestHero : HexUnit
+    public class PlayerHero : HexUnit
     {
         public float flyHight = 5;
 

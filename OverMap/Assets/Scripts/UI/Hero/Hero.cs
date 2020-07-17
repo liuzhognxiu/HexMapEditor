@@ -8,6 +8,6 @@ namespace Assets.Scripts.UI.Hero
     {
         public Image heroImage;
 
-        public TestHero prefab;
+        public PlayerHero prefab;
     }
 }
