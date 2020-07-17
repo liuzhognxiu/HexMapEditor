@@ -69,7 +69,7 @@ public class HexGameUI : MonoBehaviour
             {
                 if (selectedUnit.attackHexUnits.Contains(grid.showhexCells.Last().Unit))
                 {
-                     selectedUnit.attackHexUnits.Remove(grid.showhexCells.Last().Unit);
+                    selectedUnit.attackHexUnits.Remove(grid.showhexCells.Last().Unit);
                 }
             }
             grid.showhexCells.Remove(grid.showhexCells.Last());
@@ -79,6 +79,7 @@ public class HexGameUI : MonoBehaviour
             grid.ShowPath(selectedUnit.speed, m_CurrentCell, selectedUnit.Location, true);
         }
     }
+
 
     void AddSearchFrontier()
     {
@@ -90,7 +91,7 @@ public class HexGameUI : MonoBehaviour
                 if (
                     selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
                     grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
-                    (m_CurrentCell.Unit != null || grid.showhexCells.Last().Buff.bufftype == m_CurrentCell.Buff.bufftype)
+                    (m_CurrentCell.Unit != null || grid.showhexCells[1].Buff.bufftype == m_CurrentCell.Buff.bufftype)
                     )
                 {
                     if (!grid.showhexCells.Contains(m_CurrentCell))
@@ -98,6 +99,7 @@ public class HexGameUI : MonoBehaviour
                         grid.showhexCells.Add(m_CurrentCell);
                     }
                 }
+
             }
             else if ((selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell)))
             {
@@ -127,6 +129,8 @@ public class HexGameUI : MonoBehaviour
         {
             if (m_CurrentCell.Unit == null ||
                 !selectedUnit.attackHexUnits.Last().Location.GetIsNeighbor(m_CurrentCell)) return;
+
+            Debug.Log("当前选择的为：" + m_CurrentCell.Index + "是否已经选择过了" + selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit));
 
             if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
             {
