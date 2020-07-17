@@ -500,13 +500,6 @@ public class HexMapGenerator : MonoBehaviour
     {
         searchFrontierPhase += 1;
         HexCell firstCell = GetRandomCell(region);
-
-        //todo 测试使用生成默认的英雄
-        if (HexGameUI.Instrance.selectedUnit == null)
-        {
-            HexGameUI.Instrance.selectedUnit = CreateHero(firstCell);
-        }
-
         firstCell.SearchPhase = searchFrontierPhase;
         firstCell.Distance = 0;
         firstCell.SearchHeuristic = 0;

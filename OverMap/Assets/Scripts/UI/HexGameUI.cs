@@ -65,7 +65,17 @@ public class HexGameUI : MonoBehaviour
         if (grid.showhexCells.Count > 0 && cell == grid.showhexCells.Last())
         {
             grid.showhexCells.Last().DisableHighlight();
+            if (grid.showhexCells.Last().Unit != null && grid.showhexCells.Last().Unit.isMonster)
+            {
+                if (selectedUnit.attackHexUnits.Contains(grid.showhexCells.Last().Unit))
+                {
+                     selectedUnit.attackHexUnits.Remove(grid.showhexCells.Last().Unit);
+                }
+            }
             grid.showhexCells.Remove(grid.showhexCells.Last());
+
+
+
             grid.ShowPath(selectedUnit.speed, m_CurrentCell, selectedUnit.Location, true);
         }
     }
