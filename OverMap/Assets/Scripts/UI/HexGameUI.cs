@@ -145,7 +145,7 @@ public class HexGameUI : MonoBehaviour
         if (selectedUnit.attackHexUnits.Count > 0)
         {
             if (m_CurrentCell.Unit == null ||
-                !selectedUnit.attackHexUnits.Last().Location.GetIsNeighbor(m_CurrentCell)) return;
+                !grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)) return;
 
             Debug.Log("当前选择的为：" + m_CurrentCell.Index + "是否已经选择过了" + selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit));
 
