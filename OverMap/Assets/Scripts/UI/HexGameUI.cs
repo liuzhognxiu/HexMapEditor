@@ -42,9 +42,10 @@ public class HexGameUI : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(1))
                 {
-                    AddSearchFrontier();
+                    //先添加攻击目标，后添加寻路点
+                    UpdateCurrentCell();
                     SelectAttackTarget();
-
+                    AddSearchFrontier();
                 }
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -85,9 +86,7 @@ public class HexGameUI : MonoBehaviour
 
     void AddSearchFrontier()
     {
-
-
-        if (UpdateCurrentCell() && m_CurrentCell)
+        if (m_CurrentCell)
         {
             if (grid.showhexCells.Count != 0)
             {
@@ -132,6 +131,9 @@ public class HexGameUI : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 选择攻击目标
+    /// </summary>
     void SelectAttackTarget()
     {
         // if (m_CurrentCell.Unit != null && selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
@@ -154,12 +156,10 @@ public class HexGameUI : MonoBehaviour
                 selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
             }
         }
-        else if (m_CurrentCell.Unit != null && grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)) //todo 这里判断有问题，需要判断是当前路径下的下一个格子，而不是角色边上的下一个格子
+        else if (m_CurrentCell.Unit != null && (grid.showhexCells.Count == 0 || grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)))
         {
-            if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
-            {
-                selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
-            }
+            Debug.Log("当前选择的为：" + m_CurrentCell.Index + "是否已经选择过了" + selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit));
+            selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
         }
     }
 
