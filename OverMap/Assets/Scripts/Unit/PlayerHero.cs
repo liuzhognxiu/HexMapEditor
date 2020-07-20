@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Hero;
 using Assets.Scripts.Monster;
 #if UNITY_EDITOR
@@ -17,6 +18,8 @@ namespace Assets.Scripts.Unit
         public float flyHight = 5;
 
 
+        public TextMesh text;
+
         void Start()
         {
             unitBase = new HeroBase
@@ -27,20 +30,20 @@ namespace Assets.Scripts.Unit
             visionRange = isFly ? 5 : 3;
 
             PathfindOverBack = OverPath;
+            if (text)
+            {
+                text.text = Location.Index.ToString();
+            }
         }
 
         private void OverPath()
         {
-            for (int i = 0; i < attackHexUnits.Count; i++)
-            {
-                if (attackHexUnits[i] != null && attackHexUnits[i].unitBase != null)
-                {
-                    Attack(attackHexUnits[i].unitBase);
-                }
-            }
-            // if (attackHexUnit != null && attackHexUnit.unitBase != null)
+            // for (int i = 0; i < attackHexUnits.Count; i++)
             // {
-            //     Attack(attackHexUnit.unitBase);
+            //     if (attackHexUnits[i] != null && attackHexUnits[i].unitBase != null)
+            //     {
+            //         Attack(attackHexUnits[i].unitBase);
+            //     }
             // }
             Debug.Log("英雄怒吼！！！！！！！！！");
         }
@@ -61,8 +64,8 @@ namespace Assets.Scripts.Unit
             {
                 unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
                 monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
-                Debug.Log("英雄所剩血量：" + unitBase.hp);
-                Debug.Log("怪物所剩血量：" + monster.hp);
+                // Debug.Log("英雄所剩血量：" + unitBase.hp);
+                // Debug.Log("怪物所剩血量：" + monster.hp);
 
             }
             if (monster.hp <= 0)
@@ -73,7 +76,7 @@ namespace Assets.Scripts.Unit
 
 
         /// <summary>
-        /// 根据起飞的高度，判断当前风行是否需要上升
+        /// 根据起飞的高度，判断当前飞行是否需要上升
         /// </summary>
         /// <param name="position"></param>
         /// <param name="y"></param>
@@ -104,7 +107,6 @@ namespace Assets.Scripts.Unit
                 //走过的路程点
                 RefreshCell(m_CurrentTravelLocation);
             }
-            // Grid.DecreaseVisibility(m_CurrentTravelLocation, visionRange);
             int currentColumn = m_CurrentTravelLocation.ColumnIndex;
 
             float t = Time.deltaTime * kTravelSpeed;
@@ -113,6 +115,10 @@ namespace Assets.Scripts.Unit
                 m_CurrentTravelLocation = _pathToTravel[i];
                 a = c;
                 b = _pathToTravel[i - 1].Position;
+                if (_pathToTravel[i].Unit != null && _pathToTravel[i].Unit.isMonster)
+                {
+                    Attack(_pathToTravel[i].Unit.unitBase);
+                }
                 AddBuff(_pathToTravel[i]);
                 int nextColumn = m_CurrentTravelLocation.ColumnIndex;
                 if (currentColumn != nextColumn)
@@ -132,7 +138,6 @@ namespace Assets.Scripts.Unit
                 }
 
                 c = (b + m_CurrentTravelLocation.Position) * 0.5f;
-                // Grid.IncreaseVisibility(_pathToTravel[i], visionRange);
 
                 for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
                 {
@@ -145,11 +150,15 @@ namespace Assets.Scripts.Unit
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;
                 }
-                // Grid.DecreaseVisibility(_pathToTravel[i], visionRange);
                 t -= 1f;
+
                 RefreshCell(_pathToTravel[i]);
             }
 
+            if (attackHexUnits != null && attackHexUnits.Last() != null)
+            {
+                Attack(attackHexUnits.Last().unitBase);
+            }
 
             m_CurrentTravelLocation = null;
 

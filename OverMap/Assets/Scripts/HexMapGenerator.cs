@@ -294,7 +294,7 @@ public class HexMapGenerator : MonoBehaviour
             }
 
         }
-        Debug.Log(buffBase != null ? buffBase.bufftype.ToString() : "未添加buff类型");
+        // Debug.Log(buffBase != null ? buffBase.bufftype.ToString() : "未添加buff类型");
         return buffBase;
     }
 

@@ -115,7 +115,6 @@ public class HexGameUI : MonoBehaviour
                         grid.showhexCells.Add(m_CurrentCell);
                     }
                 }
-
             }
             else if ((selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell)))
             {

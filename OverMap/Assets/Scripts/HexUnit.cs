@@ -262,10 +262,10 @@ public class HexUnit : MonoBehaviour
 
     public void Die()
     {
-        if (m_Location)
-        {
-            Grid.DecreaseVisibility(m_Location, m_VisionRange);
-        }
+        // if (m_Location)
+        // {
+        //     Grid.DecreaseVisibility(m_Location, m_VisionRange);
+        // }
         m_Location.Unit = null;
         Destroy(gameObject);
     }
