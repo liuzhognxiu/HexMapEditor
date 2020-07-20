@@ -107,10 +107,6 @@ public class HexUnit : MonoBehaviour
         StartCoroutine(TravelPath());
     }
 
-    public virtual void Attack(HeroBase monster)
-    {
-
-    }
 
     public virtual IEnumerator TravelPath()
     {

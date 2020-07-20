@@ -18,5 +18,13 @@ namespace Assets.Scripts.Monster
 
             index = Location.Index;
         }
+
+        void Update()
+        {
+            if (this.unitBase.hp <= 0)
+            {
+                this.Die();
+            }
+        }
     }
 }

@@ -188,16 +188,6 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
-    void DoAttack()
-    {
-
-        if (m_CurrentCell && m_CurrentCell.Unit && m_CurrentCell.Unit.isMonster)
-        {
-            selectedUnit.Attack(m_CurrentCell.Unit.unitBase);
-        }
-
-    }
-
     void DoMove()
     {
         selectedUnit.Travel(grid.showhexCells);

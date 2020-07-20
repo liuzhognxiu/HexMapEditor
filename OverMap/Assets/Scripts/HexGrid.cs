@@ -74,8 +74,8 @@ public class HexGrid : MonoBehaviour
 
     public void RemoveUnit(HexUnit unit)
     {
-        units.Remove(unit);
         unit.Die();
+        units.Remove(unit);
     }
 
     public void MakeChildOfColumn(Transform child, int columnIndex)
@@ -434,7 +434,7 @@ public class HexGrid : MonoBehaviour
     {
         for (int i = 0; i < showhexCells.Count; i++)
         {
-            showhexCells[i].Buff =  HexMapGenerator.Instrance.getBuffBase(showhexCells[i]);
+            showhexCells[i].Buff =  HexMapGenerator.Instrance.GetBuffBase(showhexCells[i]);
         }
     }
 

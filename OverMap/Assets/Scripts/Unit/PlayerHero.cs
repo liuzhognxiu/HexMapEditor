@@ -38,13 +38,6 @@ namespace Assets.Scripts.Unit
 
         private void OverPath()
         {
-            // for (int i = 0; i < attackHexUnits.Count; i++)
-            // {
-            //     if (attackHexUnits[i] != null && attackHexUnits[i].unitBase != null)
-            //     {
-            //         Attack(attackHexUnits[i].unitBase);
-            //     }
-            // }
             Debug.Log("英雄怒吼！！！！！！！！！");
         }
 
@@ -58,19 +51,16 @@ namespace Assets.Scripts.Unit
             StartCoroutine(TravelPath());
         }
 
-        public override void Attack(HeroBase monster)
+        readonly WaitForSeconds m_Seconds = new WaitForSeconds(0.2f);
+        public IEnumerator Attack(HeroBase monster)
         {
             while (monster.hp > 0)
             {
+                yield return m_Seconds;  
                 unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
                 monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
-                // Debug.Log("英雄所剩血量：" + unitBase.hp);
-                // Debug.Log("怪物所剩血量：" + monster.hp);
-
-            }
-            if (monster.hp <= 0)
-            {
-                Grid.RemoveUnit(monster.unit);
+                Debug.Log("英雄所剩血量：" + unitBase.hp);
+                Debug.Log("怪物所剩血量：" + monster.hp);
             }
         }
 
@@ -115,10 +105,7 @@ namespace Assets.Scripts.Unit
                 m_CurrentTravelLocation = _pathToTravel[i];
                 a = c;
                 b = _pathToTravel[i - 1].Position;
-                if (_pathToTravel[i].Unit != null && _pathToTravel[i].Unit.isMonster)
-                {
-                    Attack(_pathToTravel[i].Unit.unitBase);
-                }
+
                 AddBuff(_pathToTravel[i]);
                 int nextColumn = m_CurrentTravelLocation.ColumnIndex;
                 if (currentColumn != nextColumn)
@@ -151,13 +138,16 @@ namespace Assets.Scripts.Unit
                     yield return null;
                 }
                 t -= 1f;
-
+                if (_pathToTravel[i].Unit != null && _pathToTravel[i].Unit.isMonster)
+                {
+                    yield return Attack(_pathToTravel[i].Unit.unitBase);
+                }
                 RefreshCell(_pathToTravel[i]);
             }
 
-            if (attackHexUnits != null && attackHexUnits.Last() != null)
+            if (!_pathToTravel.Last().Unit.isMonster && attackHexUnits != null && attackHexUnits.Count > 0)
             {
-                Attack(attackHexUnits.Last().unitBase);
+                yield return Attack(attackHexUnits.Last().unitBase);
             }
 
             m_CurrentTravelLocation = null;
@@ -188,8 +178,7 @@ namespace Assets.Scripts.Unit
                 transform.localPosition = m_Location.Position + new Vector3(0, flyHight, 0);
             }
             Orientation = transform.localRotation.eulerAngles.y;
-            Grid.UnEnableHight();
-
+            attackHexUnits?.Clear();
             ListPool<HexCell>.Add(_pathToTravel);
             PathfindOverBack.Invoke();
             _pathToTravel = null;
@@ -198,7 +187,7 @@ namespace Assets.Scripts.Unit
         void RefreshCell(HexCell cell)
         {
             cell.DisableHighlight();
-            cell.Buff = HexMapGenerator.Instrance.getBuffBase(cell);
+            cell.Buff = HexMapGenerator.Instrance.GetBuffBase(cell);
             cell.TerrainTypeIndex = HexMapGenerator.Instrance.GetTerrain(cell);
         }
 

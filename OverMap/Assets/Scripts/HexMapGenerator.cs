@@ -257,11 +257,11 @@ public class HexMapGenerator : MonoBehaviour
     }
 
 
-    public BuffBase getBuffBase(HexCell cell)
+    public BuffBase GetBuffBase(HexCell cell)
     {
         BuffBase buffBase = null;
         cell.Buff = null;
-        if (cell.Unit == null)
+        if (cell.Unit == null || cell.Unit.isMonster)
         {
             float value = Random.value;
             if (value < AttackBuffProbability)
@@ -294,7 +294,7 @@ public class HexMapGenerator : MonoBehaviour
             }
 
         }
-        // Debug.Log(buffBase != null ? buffBase.bufftype.ToString() : "未添加buff类型");
+        Debug.Log(buffBase != null ? buffBase.bufftype.ToString() : "未添加buff类型");
         return buffBase;
     }
 
