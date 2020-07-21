@@ -19,7 +19,7 @@ namespace Assets.Scripts.Manager
             {
                 if (HexGameUI.Instrance.selectedUnit.isMoveOver)
                 {
-                    if (RoundManager.Instance.currentIsOver)
+                    if (RoundManager.Instance.currentIsOver && RoundManager.Instance.currentMonsterMoveOver)
                     {
                         RoundManager.Instance.MonsterDoMove();
                     }

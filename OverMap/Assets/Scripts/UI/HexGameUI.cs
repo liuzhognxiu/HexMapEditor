@@ -58,6 +58,11 @@ public class HexGameUI : MonoBehaviour
                 {
                     DoMove();
                 }
+
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    HexMapGenerator.Instrance.CreateMonster();
+                }
             }
 
         }
@@ -150,9 +155,7 @@ public class HexGameUI : MonoBehaviour
         {
             if (m_CurrentCell.Unit == null ||
                 !grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)) return;
-
-            Debug.Log("当前选择的为：" + m_CurrentCell.Index + "是否已经选择过了" + selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit));
-
+            
             if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
             {
                 selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
@@ -160,7 +163,6 @@ public class HexGameUI : MonoBehaviour
         }
         else if (m_CurrentCell.Unit != null && (grid.showhexCells.Count == 0 || grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)))
         {
-            Debug.Log("当前选择的为：" + m_CurrentCell.Index + "是否已经选择过了" + selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit));
             selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);
         }
     }

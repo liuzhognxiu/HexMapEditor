@@ -25,7 +25,7 @@ public class RoundManager : MonoSingleton<RoundManager>
 
     public bool currentIsOver = true;
 
-    public bool currentMonsterMoveOver = false;
+    public bool currentMonsterMoveOver = true;
 
     public Queue<MonsterBase> monsterHexUnits = new Queue<MonsterBase>();
 
