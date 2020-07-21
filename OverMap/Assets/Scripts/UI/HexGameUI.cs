@@ -1,7 +1,10 @@
 ﻿using System.Linq;
 using Assets.Scripts.Buff;
+using Assets.Scripts.Unit;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class HexGameUI : MonoBehaviour
 {
@@ -12,9 +15,9 @@ public class HexGameUI : MonoBehaviour
 
     HexCell m_CurrentCell;
 
-    public HexUnit selectedUnit;
+    public PlayerHero selectedUnit;
 
-
+    public Text currRoundText;
 
     void Awake()
     {
@@ -168,7 +171,7 @@ public class HexGameUI : MonoBehaviour
         UpdateCurrentCell();
         if (m_CurrentCell)
         {
-            selectedUnit = m_CurrentCell.Unit;
+            selectedUnit = m_CurrentCell.Unit as PlayerHero;
         }
     }
 

@@ -20,5 +20,12 @@ namespace Assets.Scripts.Monster
                 unit  = this,
             };
         }
+
+        public virtual void FindHeroCell()
+        {
+
+            Grid.FindPath(this.Location, HexGameUI.Instrance.selectedUnit.Location.GetNeighbor(HexDirection.E), this);
+            this.Travel(Grid.GetPath());
+        }
     }
 }

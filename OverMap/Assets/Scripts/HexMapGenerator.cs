@@ -252,7 +252,7 @@ public class HexMapGenerator : MonoBehaviour
 
         if (HexGameUI.Instrance.selectedUnit == null)
         {
-            HexGameUI.Instrance.selectedUnit = CreateHero(firstCell);
+            HexGameUI.Instrance.selectedUnit = CreateHero(firstCell) as PlayerHero;
         }
     }
 
@@ -362,20 +362,16 @@ public class HexMapGenerator : MonoBehaviour
     /// <summary>
     /// 随机生成怪物
     /// </summary>
-    void CreateMonster()
+    public void CreateMonster()
     {
-        for (int i = 0; i < cellCount; i++)
-        {
-            if (i % 10 == 3)
-            {
-                // grid.GetCell(i).Unit = Instantiate<MonsterBase>(monster);
-                HexUnit monsterUnit = Instantiate<MonsterBase>(monster);
-                grid.AddUnit(
-                    monsterUnit, grid.GetCell(i), Random.Range(0f, 360f)
-                );
-                grid.GetCell(i).Unit.ValidateLocation();
-            }
-        }
+        HexCell cell = GetRandomCell(regions[0]);
+        HexUnit monsterUnit = Instantiate<MonsterBase>(monster);
+        grid.AddUnit(
+            monsterUnit, cell, Random.Range(0f, 360f)
+        );
+        cell.Unit.ValidateLocation();
+        RoundManager.Instance.monsterHexUnits.Enqueue((MonsterBase)monsterUnit);
+
     }
 
     void CreateRegions()

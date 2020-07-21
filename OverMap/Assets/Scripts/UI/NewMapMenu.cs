@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Manager;
+using UnityEngine;
 
 public class NewMapMenu : MonoBehaviour {
 
 	public HexGrid hexGrid;
 
 	public HexMapGenerator mapGenerator;
+
+    public GameObject createButton;
 
 	bool generateMaps = true;
 
@@ -26,10 +29,12 @@ public class NewMapMenu : MonoBehaviour {
 	public void Close () {
 		gameObject.SetActive(false);
 		HexMapCamera.Locked = false;
-	}
+        createButton.gameObject.SetActive(false);
+        GameManger.Instance.IsStartGame = true;
+    }
 
 	public void CreateSmallMap () {
-		CreateMap(20, 15);
+		CreateMap(20, 15);  
 	}
 
 	public void CreateMediumMap () {

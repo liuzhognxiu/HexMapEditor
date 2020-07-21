@@ -49,7 +49,7 @@ public class HexGrid : MonoBehaviour
 
     int currentCenterColumnIndex = -1;
 
-    List<HexUnit> units = new List<HexUnit>();
+    public List<HexUnit> units = new List<HexUnit>();
 
     HexCellShaderData cellShaderData;
 
@@ -434,7 +434,7 @@ public class HexGrid : MonoBehaviour
     {
         for (int i = 0; i < showhexCells.Count; i++)
         {
-            showhexCells[i].Buff =  HexMapGenerator.Instrance.GetBuffBase(showhexCells[i]);
+            showhexCells[i].Buff = HexMapGenerator.Instrance.GetBuffBase(showhexCells[i]);
         }
     }
 
@@ -444,11 +444,11 @@ public class HexGrid : MonoBehaviour
         currentPathFrom = fromCell;
         currentPathTo = toCell;
         currentPathExists = Search(fromCell, toCell, unit);
-        ShowPath(unit.speed);
+        // ShowPath(unit.speed);
     }
 
 
-    bool Search(HexCell fromCell, HexCell toCell, HexUnit unit)
+    public bool Search(HexCell fromCell, HexCell toCell, HexUnit unit)
     {
         int speed = unit.speed;
         searchFrontierPhase += 2;
@@ -485,7 +485,7 @@ public class HexGrid : MonoBehaviour
                     continue;
                 }
 
-                if (neighbor.Buff != null && toCell.Buff != null && neighbor.Buff.bufftype != toCell.Buff.bufftype)
+                if (!unit.isMonster && neighbor.Buff != null && toCell.Buff != null && neighbor.Buff.bufftype != toCell.Buff.bufftype)
                 {
                     continue;
                 }

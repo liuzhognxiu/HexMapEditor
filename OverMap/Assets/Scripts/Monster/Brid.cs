@@ -6,6 +6,7 @@ namespace Assets.Scripts.Monster
     {
         public TextMesh text;
         public int index;
+
         void Start()
         {
             isFly = true;
@@ -26,5 +27,6 @@ namespace Assets.Scripts.Monster
                 this.Die();
             }
         }
+
     }
 }

@@ -117,7 +117,7 @@ public class HexUnit : MonoBehaviour
         {
             m_CurrentTravelLocation = _pathToTravel[0];
         }
-        Grid.DecreaseVisibility(m_CurrentTravelLocation, m_VisionRange);
+        // Grid.DecreaseVisibility(m_CurrentTravelLocation, m_VisionRange);
         int currentColumn = m_CurrentTravelLocation.ColumnIndex;
 
         float t = Time.deltaTime * kTravelSpeed;
@@ -145,7 +145,7 @@ public class HexUnit : MonoBehaviour
             }
 
             c = (b + m_CurrentTravelLocation.Position) * 0.5f;
-            Grid.IncreaseVisibility(_pathToTravel[i], m_VisionRange);
+            // Grid.IncreaseVisibility(_pathToTravel[i], m_VisionRange);
 
             for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
             {
@@ -155,7 +155,7 @@ public class HexUnit : MonoBehaviour
                 transform.localRotation = Quaternion.LookRotation(d);
                 yield return null;
             }
-            Grid.DecreaseVisibility(_pathToTravel[i], m_VisionRange);
+            // Grid.DecreaseVisibility(_pathToTravel[i], m_VisionRange);
             t -= 1f;
         }
         m_CurrentTravelLocation = null;
@@ -163,7 +163,7 @@ public class HexUnit : MonoBehaviour
         a = c;
         b = m_Location.Position;
         c = b;
-        Grid.IncreaseVisibility(m_Location, m_VisionRange);
+        // Grid.IncreaseVisibility(m_Location, m_VisionRange);
         for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
         {
             transform.localPosition = Bezier.GetPoint(a, b, c, t);
@@ -182,8 +182,11 @@ public class HexUnit : MonoBehaviour
         }
         m_Orientation = transform.localRotation.eulerAngles.y;
         ListPool<HexCell>.Add(_pathToTravel);
-        PathfindOverBack.Invoke();
         _pathToTravel = null;
+        if (isMonster)
+        {
+            RoundManager.Instance.currentMonsterMoveOver = true;
+        }
     }
 
     public IEnumerator LookAt(Vector3 point)

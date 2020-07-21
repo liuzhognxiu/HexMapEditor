@@ -17,6 +17,7 @@ namespace Assets.Scripts.Unit
     {
         public float flyHight = 5;
 
+        public bool isMoveOver = false;
 
         public TextMesh text;
 
@@ -39,6 +40,7 @@ namespace Assets.Scripts.Unit
         private void OverPath()
         {
             Debug.Log("英雄怒吼！！！！！！！！！");
+            isMoveOver = true;
         }
 
         public override void Travel(List<HexCell> path)
