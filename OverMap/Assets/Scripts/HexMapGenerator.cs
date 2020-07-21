@@ -370,6 +370,8 @@ public class HexMapGenerator : MonoBehaviour
             monsterUnit, cell, Random.Range(0f, 360f)
         );
         cell.Unit.ValidateLocation();
+        cell.Buff = null;
+        cell.TerrainTypeIndex = 0;
         RoundManager.Instance.monsterHexUnits.Enqueue((MonsterBase)monsterUnit);
 
     }
