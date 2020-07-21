@@ -26,11 +26,27 @@ namespace Assets.Scripts.Monster
         {
             if (this.unitBase.hp > 0)
             {
-                Debug.Log("Location:"+ Location.Index + "selectedUnit:"+ HexGameUI.Instrance.selectedUnit.Location.Index);
-                Grid.FindPath(this.Location, HexGameUI.Instrance.selectedUnit.Location.GetNeighbor(HexDirection.E), this);
+                Grid.FindPath(this.Location, GetToCell(HexGameUI.Instrance.selectedUnit.Location), this);
                 this.Travel(Grid.GetPath());
             }
+        }
 
+        HexCell GetToCell(HexCell cell)
+        {
+            HexCell toCell = new HexCell();
+            for (int i = 0; i < (int)HexDirection.NW; i++)
+            {
+                if (cell.GetNeighbor((HexDirection)i) != null && cell.GetNeighbor((HexDirection)i).Unit == null)
+                {
+                    toCell = cell.GetNeighbor((HexDirection)i);
+                }
+            }
+
+            if (toCell == null)
+            {
+                toCell = GetToCell(HexGameUI.Instrance.selectedUnit.Location.GetNeighbor(HexDirection.NE));
+            }
+            return toCell;
         }
     }
 }

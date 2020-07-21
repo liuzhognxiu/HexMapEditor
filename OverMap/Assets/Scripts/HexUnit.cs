@@ -116,6 +116,7 @@ public class HexUnit : MonoBehaviour
         if (!m_CurrentTravelLocation)
         {
             m_CurrentTravelLocation = _pathToTravel[0];
+            RefreshCell(m_CurrentTravelLocation);
         }
         // Grid.DecreaseVisibility(m_CurrentTravelLocation, m_VisionRange);
         int currentColumn = m_CurrentTravelLocation.ColumnIndex;
@@ -173,8 +174,6 @@ public class HexUnit : MonoBehaviour
             yield return null;
         }
 
-
-
         transform.localPosition = m_Location.Position;
         if (this.isFly)
         {
@@ -185,6 +184,8 @@ public class HexUnit : MonoBehaviour
         _pathToTravel = null;
         if (isMonster)
         {
+            Location.Buff = null;
+            Location.TerrainTypeIndex = 0;
             RoundManager.Instance.currentMonsterMoveOver = true;
         }
     }
@@ -269,6 +270,12 @@ public class HexUnit : MonoBehaviour
         Destroy(gameObject);
     }
 
+    void RefreshCell(HexCell cell)
+    {
+        cell.DisableHighlight();
+        cell.Buff = HexMapGenerator.Instrance.GetBuffBase(cell);
+        cell.TerrainTypeIndex = HexMapGenerator.Instrance.GetTerrain(cell);
+    }
     public void Save(BinaryWriter writer)
     {
         m_Location.coordinates.Save(writer);

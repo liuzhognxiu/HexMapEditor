@@ -96,7 +96,6 @@ namespace Assets.Scripts.Unit
             if (!m_CurrentTravelLocation)
             {
                 m_CurrentTravelLocation = _pathToTravel[0];
-                //走过的路程点
                 RefreshCell(m_CurrentTravelLocation);
             }
             int currentColumn = m_CurrentTravelLocation.ColumnIndex;
