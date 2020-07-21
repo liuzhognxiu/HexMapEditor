@@ -25,7 +25,7 @@ namespace Assets.Scripts.Manager
                     }
                 }
 
-                if (RoundManager.Instance.monsterHexUnits.Count == 0 && HexGameUI.Instrance.selectedUnit.isMoveOver)
+                if (RoundManager.Instance.currentMonsterMoveOver && RoundManager.Instance.monsterHexUnits.Count == 0 && HexGameUI.Instrance.selectedUnit.isMoveOver)
                 {
                     RoundManager.Instance.currentIsOver = true;
                     RoundManager.Instance.CurrentRoundNumber++;
