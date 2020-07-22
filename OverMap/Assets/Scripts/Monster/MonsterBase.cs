@@ -44,6 +44,8 @@ namespace Assets.Scripts.Monster
         HexCell GetToCell(HexCell cell)
         {
             HexCell toCell = new HexCell { Index = -1 };
+            int distance = cell.coordinates.DistanceTo(Location.coordinates);
+            strength = strength < distance ? strength : distance - 1;
             for (int i = 0; i < strength; i++)
             {
                 toCell = toCell.Index == -1 ? Location.GetNeighbor(MonsterGetHexDirection(cell, Location)) : toCell.GetNeighbor(MonsterGetHexDirection(cell, toCell));
