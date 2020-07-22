@@ -11237,6 +11237,7 @@ MonoBehaviour:
   noiseSource: {fileID: 2800000, guid: 38701cdeb1fb9427cbb585f917aa59cb, type: 3}
   seed: 1234
   showhexCells: []
+  units: []
 --- !u!4 &1571186512
 Transform:
   m_ObjectHideFlags: 0
@@ -16081,9 +16082,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stickMinZoom: -250
-  stickMaxZoom: -45
+  stickMaxZoom: -250
   swivelMinZoom: 90
-  swivelMaxZoom: 45
+  swivelMaxZoom: 90
   moveSpeedMinZoom: 400
   moveSpeedMaxZoom: 100
   rotationSpeed: 180

@@ -26,8 +26,16 @@ namespace Assets.Scripts.Monster
         {
             if (this.unitBase.hp > 0)
             {
-                Grid.FindPath(this.Location, GetToCell(HexGameUI.Instrance.selectedUnit.Location), this);
-                this.Travel(Grid.GetPath());
+                if (!Location.GetIsNeighbor(HexGameUI.Instrance.selectedUnit.Location))
+                {
+                    Grid.FindPath(this.Location, GetToCell(HexGameUI.Instrance.selectedUnit.Location), this);
+                    this.Travel(Grid.GetPath());
+                }
+                else
+                {
+                    Debug.Log("攻击英雄");
+                    RoundManager.Instance.currentMonsterMoveOver = true;
+                }
             }
         }
 
@@ -35,6 +43,7 @@ namespace Assets.Scripts.Monster
         {
             HexCell toCell = new HexCell();
             HexDirection hexDirection = GetHexDirection(cell);
+            Debug.Log(hexDirection);
             if (cell.GetNeighbor(hexDirection) != null && cell.GetNeighbor(hexDirection).Unit == null)
             {
                 return cell.GetNeighbor(hexDirection);
@@ -62,9 +71,9 @@ namespace Assets.Scripts.Monster
         /// <returns></returns>
         HexDirection GetHexDirection(HexCell cell)
         {
-            if (cell.coordinates.X == HexGameUI.Instrance.selectedUnit.Location.coordinates.X)
+            if (cell.coordinates.X == Location.coordinates.X)
             {
-                if (cell.coordinates.Y > HexGameUI.Instrance.selectedUnit.Location.coordinates.Y)
+                if (cell.coordinates.Y < Location.coordinates.Y)
                 {
                     return HexDirection.NE;
                 }
@@ -73,34 +82,34 @@ namespace Assets.Scripts.Monster
                     return HexDirection.SW;
                 }
             }
-            if (cell.coordinates.X < HexGameUI.Instrance.selectedUnit.Location.coordinates.X)
+            if (cell.coordinates.X > Location.coordinates.X)
             {
-                if (cell.coordinates.Z == HexGameUI.Instrance.selectedUnit.Location.coordinates.Z)
+                if (cell.coordinates.Z == Location.coordinates.Z)
                 {
                     return HexDirection.W;
                 }
-                else if (cell.coordinates.Z > HexGameUI.Instrance.selectedUnit.Location.coordinates.Z)
-                {
-                    return HexDirection.NW;
-                }
-                else
+                else if (cell.coordinates.Z > Location.coordinates.Z)
                 {
                     return HexDirection.SW;
                 }
+                else
+                {
+                    return HexDirection.NW;
+                }
             }
-            if (cell.coordinates.X > HexGameUI.Instrance.selectedUnit.Location.coordinates.X)
+            if (cell.coordinates.X < Location.coordinates.X)
             {
-                if (cell.coordinates.Z == HexGameUI.Instrance.selectedUnit.Location.coordinates.Z)
+                if (cell.coordinates.Z == Location.coordinates.Z)
                 {
                     return HexDirection.E;
                 }
-                else if (cell.coordinates.Z > HexGameUI.Instrance.selectedUnit.Location.coordinates.Z)
+                else if (cell.coordinates.Z > Location.coordinates.Z)
                 {
-                    return HexDirection.NE;
+                    return HexDirection.SE;
                 }
                 else
                 {
-                    return HexDirection.SE;
+                    return HexDirection.NE;
                 }
             }
             return HexDirection.NE;
