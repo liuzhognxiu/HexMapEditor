@@ -9,16 +9,16 @@ public class NewMapMenu : MonoBehaviour {
 
     public GameObject createButton;
 
-	bool generateMaps = true;
+	bool m_GenerateMaps = true;
 
-	bool wrapping = true;
+	bool m_Wrapping = false;
 
 	public void ToggleMapGeneration (bool toggle) {
-		generateMaps = toggle;
+		m_GenerateMaps = toggle;
 	}
 
 	public void ToggleWrapping (bool toggle) {
-		wrapping = toggle;
+		m_Wrapping = toggle;
 	}
 
 	public void Open () {
@@ -46,11 +46,11 @@ public class NewMapMenu : MonoBehaviour {
 	}
 
 	void CreateMap (int x, int z) {
-		if (generateMaps) {
-			mapGenerator.GenerateMap(x, z, wrapping);
+		if (m_GenerateMaps) {
+			mapGenerator.GenerateMap(x, z, m_Wrapping);
 		}
 		else {
-			hexGrid.CreateMap(x, z, wrapping);
+			hexGrid.CreateMap(x, z, m_Wrapping);
 		}
 		HexMapCamera.ValidatePosition();
 		Close();

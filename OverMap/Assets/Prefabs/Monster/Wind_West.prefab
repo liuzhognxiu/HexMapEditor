@@ -92,11 +92,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a9022f3eaa34340ab9355ace205436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackHexUnit: {fileID: 0}
+  attackHexUnits: []
   isCanSelect: 0
   isFly: 0
   isCanWater: 0
+  isMonster: 0
   m_Location: {fileID: 0}
   m_CurrentTravelLocation: {fileID: 0}
   speed: 24
   _pathToTravel: []
-  monster: {fileID: 0}
+  strength: 3
+  text: {fileID: 0}
+  index: 0
