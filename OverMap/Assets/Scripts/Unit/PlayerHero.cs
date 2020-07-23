@@ -40,29 +40,43 @@ namespace Assets.Scripts.Unit
         private void OverPath()
         {
             Debug.Log("英雄怒吼！！！！！！！！！");
+            CorrectCell();
             isMoveOver = true;
         }
 
+        void CorrectCell()
+        {
+            Location.Buff = null;
+            Location.DisableHighlight();
+            Location.TerrainTypeIndex = 0;
+            transform.localPosition = Bezier.GetPoint(Location.transform.position, Location.transform.position, Location.transform.position, 1);
+        }
+
+        private IEnumerator travel;
         public override void Travel(List<HexCell> path)
         {
-            m_Location.Unit = null;
-            m_Location = path[path.Count - 1];
-            m_Location.Unit = this;
-            _pathToTravel = path;
+            pathToTravel = path;
             StopAllCoroutines();
-            StartCoroutine(TravelPath());
+            travel = TravelPath();
+            StartCoroutine(travel);
         }
 
         readonly WaitForSeconds m_Seconds = new WaitForSeconds(0.2f);
         public IEnumerator Attack(HeroBase monster)
         {
-            while (monster.hp > 0)
+            yield return m_Seconds;
+            monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
+            Debug.Log("英雄所剩血量：" + unitBase.hp);
+            Debug.Log("怪物所剩血量：" + monster.hp);
+
+            if (monster.hp > 0)
             {
-                yield return m_Seconds;  
-                unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
-                monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
-                Debug.Log("英雄所剩血量：" + unitBase.hp);
-                Debug.Log("怪物所剩血量：" + monster.hp);
+                Debug.Log("暂停本次寻路");
+                StopCoroutine(travel);
+                Grid.UnEnableHight();
+                Grid.showhexCells.Clear();
+                attackHexUnits.Clear();
+                CorrectCell();
             }
         }
 
@@ -73,7 +87,7 @@ namespace Assets.Scripts.Unit
         /// <param name="position"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private Vector3 getFlyVector3(Vector3 position, float y)
+        private Vector3 GetFlyVector3(Vector3 position, float y)
         {
             if (this.Location.IsUnderwater)
             {
@@ -89,25 +103,37 @@ namespace Assets.Scripts.Unit
 
         public override IEnumerator TravelPath()
         {
-            float flyPositionY = _pathToTravel[0].Position.y + flyHight;
-            Vector3 a, b, c = _pathToTravel[0].Position;
-            yield return LookAt(_pathToTravel[1].Position);
+            float flyPositionY = pathToTravel[0].Position.y + flyHight;
+            Vector3 a, b, c = pathToTravel[0].Position;
+            yield return LookAt(pathToTravel[1].Position);
 
             if (!m_CurrentTravelLocation)
             {
-                m_CurrentTravelLocation = _pathToTravel[0];
+                m_CurrentTravelLocation = pathToTravel[0];
                 RefreshCell(m_CurrentTravelLocation);
             }
+
             int currentColumn = m_CurrentTravelLocation.ColumnIndex;
 
             float t = Time.deltaTime * kTravelSpeed;
-            for (int i = 1; i < _pathToTravel.Count; i++)
+            for (int i = 1; i < pathToTravel.Count; i++)
             {
-                m_CurrentTravelLocation = _pathToTravel[i];
+                m_CurrentTravelLocation = pathToTravel[i];
                 a = c;
-                b = _pathToTravel[i - 1].Position;
+                b = pathToTravel[i - 1].Position;
 
-                AddBuff(_pathToTravel[i]);
+                //每次寻路之前检测下一个目标点是否有怪物，如果有的话，先攻击，攻击未杀死怪物暂停寻路
+                if (pathToTravel[i].Unit != null && pathToTravel[i].Unit.isMonster)
+                {
+                    if (attackHexUnits.Contains(pathToTravel[i].Unit))
+                    {
+                        attackHexUnits.Remove(pathToTravel[i].Unit);
+                    }
+                    yield return Attack(pathToTravel[i].Unit.unitBase);
+                }
+
+                pathToTravel[i - 1].Unit = null;
+                AddBuff(pathToTravel[i]);
                 int nextColumn = m_CurrentTravelLocation.ColumnIndex;
                 if (currentColumn != nextColumn)
                 {
@@ -126,12 +152,11 @@ namespace Assets.Scripts.Unit
                 }
 
                 c = (b + m_CurrentTravelLocation.Position) * 0.5f;
-
                 for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
                 {
-                    a = getFlyVector3(a, flyPositionY);
-                    b = getFlyVector3(b, flyPositionY);
-                    c = getFlyVector3(c, flyPositionY);
+                    a = GetFlyVector3(a, flyPositionY);
+                    b = GetFlyVector3(b, flyPositionY);
+                    c = GetFlyVector3(c, flyPositionY);
                     transform.localPosition = Bezier.GetPoint(a, b, c, t);
                     Vector3 d = Bezier.GetDerivative(a, b, c, t);
                     d.y = 0f;
@@ -139,14 +164,15 @@ namespace Assets.Scripts.Unit
                     yield return null;
                 }
                 t -= 1f;
-                if (_pathToTravel[i].Unit != null && _pathToTravel[i].Unit.isMonster)
-                {
-                    yield return Attack(_pathToTravel[i].Unit.unitBase);
-                }
-                RefreshCell(_pathToTravel[i]);
+
+                RefreshCell(pathToTravel[i - 1]);
             }
 
-            if (!_pathToTravel.Last().Unit.isMonster && attackHexUnits != null && attackHexUnits.Count > 0)
+            // if (!pathToTravel.Last().Unit.isMonster && attackHexUnits != null && attackHexUnits.Count > 0)
+            // {
+            //     yield return Attack(attackHexUnits.Last().unitBase);
+            // }
+            if (attackHexUnits != null && attackHexUnits.Count > 0)
             {
                 yield return Attack(attackHexUnits.Last().unitBase);
             }
@@ -159,9 +185,9 @@ namespace Assets.Scripts.Unit
             Grid.IncreaseVisibility(m_Location, visionRange);
             for (; t < 1f; t += Time.deltaTime * kTravelSpeed)
             {
-                a = getFlyVector3(a, flyPositionY);
-                b = getFlyVector3(b, flyPositionY);
-                c = getFlyVector3(c, flyPositionY);
+                a = GetFlyVector3(a, flyPositionY);
+                b = GetFlyVector3(b, flyPositionY);
+                c = GetFlyVector3(c, flyPositionY);
                 transform.localPosition = Bezier.GetPoint(a, b, c, t);
                 Vector3 d = Bezier.GetDerivative(a, b, c, t);
                 d.y = 0f;
@@ -180,21 +206,16 @@ namespace Assets.Scripts.Unit
             }
             Orientation = transform.localRotation.eulerAngles.y;
             attackHexUnits?.Clear();
-            ListPool<HexCell>.Add(_pathToTravel);
+            ListPool<HexCell>.Add(pathToTravel);
             PathfindOverBack.Invoke();
-            _pathToTravel = null;
+            pathToTravel = null;
         }
 
-        void RefreshCell(HexCell cell)
-        {
-            cell.DisableHighlight();
-            cell.Buff = HexMapGenerator.Instrance.GetBuffBase(cell);
-            cell.TerrainTypeIndex = HexMapGenerator.Instrance.GetTerrain(cell);
-        }
 
         void AddBuff(HexCell cell)
         {
             cell.Buff?.OnEnter();
+            m_Location = cell;
         }
     }
 }

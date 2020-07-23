@@ -76,7 +76,7 @@ public class HexUnit : MonoBehaviour
     }
 
 
-    public List<HexCell> _pathToTravel;
+    public List<HexCell> pathToTravel;
 
     public void ValidateLocation()
     {
@@ -102,7 +102,7 @@ public class HexUnit : MonoBehaviour
         m_Location.Unit = null;
         m_Location = path[path.Count - 1];
         m_Location.Unit = this;
-        _pathToTravel = path;
+        pathToTravel = path;
         StopAllCoroutines();
         StartCoroutine(TravelPath());
     }
@@ -110,23 +110,24 @@ public class HexUnit : MonoBehaviour
 
     public virtual IEnumerator TravelPath()
     {
-        Vector3 a, b, c = _pathToTravel[0].Position;
-        yield return LookAt(_pathToTravel[1].Position);
+        Vector3 a, b, c = pathToTravel[0].Position;
+
+        yield return LookAt(pathToTravel[1].Position);
 
         if (!m_CurrentTravelLocation)
         {
-            m_CurrentTravelLocation = _pathToTravel[0];
+            m_CurrentTravelLocation = pathToTravel[0];
             RefreshCell(m_CurrentTravelLocation);
         }
         // Grid.DecreaseVisibility(m_CurrentTravelLocation, m_VisionRange);
         int currentColumn = m_CurrentTravelLocation.ColumnIndex;
 
         float t = Time.deltaTime * kTravelSpeed;
-        for (int i = 1; i < _pathToTravel.Count; i++)
+        for (int i = 1; i < pathToTravel.Count; i++)
         {
-            m_CurrentTravelLocation = _pathToTravel[i];
+            m_CurrentTravelLocation = pathToTravel[i];
             a = c;
-            b = _pathToTravel[i - 1].Position;
+            b = pathToTravel[i - 1].Position;
 
             int nextColumn = m_CurrentTravelLocation.ColumnIndex;
             if (currentColumn != nextColumn)
@@ -180,8 +181,8 @@ public class HexUnit : MonoBehaviour
             transform.localPosition = new Vector3(m_Location.Position.x, m_Location.Position.y + 10, m_Location.Position.z);
         }
         m_Orientation = transform.localRotation.eulerAngles.y;
-        ListPool<HexCell>.Add(_pathToTravel);
-        _pathToTravel = null;
+        ListPool<HexCell>.Add(pathToTravel);
+        pathToTravel = null;
         if (isMonster)
         {
             Location.Buff = null;
@@ -233,6 +234,7 @@ public class HexUnit : MonoBehaviour
     public int GetMoveCost(
         HexCell fromCell, HexCell toCell, HexDirection direction)
     {
+        return 1;
         if (!IsValidDestination(toCell))
         {
             return -1;
@@ -270,7 +272,7 @@ public class HexUnit : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void RefreshCell(HexCell cell)
+    public void RefreshCell(HexCell cell)
     {
         cell.DisableHighlight();
         cell.Buff = HexMapGenerator.Instrance.GetBuffBase(cell);

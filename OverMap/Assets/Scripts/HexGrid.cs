@@ -434,7 +434,7 @@ public class HexGrid : MonoBehaviour
     {
         for (int i = 0; i < showhexCells.Count; i++)
         {
-            showhexCells[i].Buff = HexMapGenerator.Instrance.GetBuffBase(showhexCells[i]);
+            showhexCells[i].DisableHighlight();
         }
     }
 
@@ -506,6 +506,12 @@ public class HexGrid : MonoBehaviour
                 if (turn > currentTurn)
                 {
                     distance = turn * speed + moveCost;
+                }
+
+                if (turn >= 1)
+                {
+                    currentPathTo = current;
+                    return true;
                 }
 
                 if (neighbor.SearchPhase < searchFrontierPhase)

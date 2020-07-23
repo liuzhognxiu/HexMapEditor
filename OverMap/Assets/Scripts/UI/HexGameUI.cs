@@ -108,9 +108,7 @@ public class HexGameUI : MonoBehaviour
                     buff = m_CurrentCell.Buff;
                 }
 
-                if (
-                    selectedUnit.IsValidDestination(grid.showhexCells.Last()) &&
-                    grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
+                if (grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell) &&
                     (m_CurrentCell.Unit != null || buff.bufftype == m_CurrentCell.Buff.bufftype))
                 {
                     if (!grid.showhexCells.Contains(m_CurrentCell))
@@ -119,7 +117,7 @@ public class HexGameUI : MonoBehaviour
                     }
                 }
             }
-            else if ((selectedUnit.IsValidDestination(m_CurrentCell) && selectedUnit.Location.GetIsNeighbor(m_CurrentCell)))
+            else if (selectedUnit.Location.GetIsNeighbor(m_CurrentCell))
             {
                 grid.showhexCells.Add(selectedUnit.Location);
                 if (!grid.showhexCells.Contains(m_CurrentCell))
@@ -146,11 +144,19 @@ public class HexGameUI : MonoBehaviour
         // {
         //     selectedUnit.attackHexUnit = null;
         // }
+        if (!m_CurrentCell)
+        {
+            return;
+        }
+        if (m_CurrentCell.Unit == HexGameUI.Instrance.selectedUnit)
+        {
+            return;
+        }
         if (selectedUnit.attackHexUnits.Count > 0)
         {
             if (m_CurrentCell.Unit == null ||
                 !grid.showhexCells.Last().GetIsNeighbor(m_CurrentCell)) return;
-            
+
             if (!selectedUnit.attackHexUnits.Contains(m_CurrentCell.Unit))
             {
                 selectedUnit.attackHexUnits.Add(m_CurrentCell.Unit);

@@ -34,8 +34,8 @@ public class RoundManager : MonoSingleton<RoundManager>
         if (monsterHexUnits.Count > 0)
         {
             MonsterBase monster = monsterHexUnits.Dequeue();
-            monster.FindHeroCell();
             currentMonsterMoveOver = false;
+            monster.FindHeroCell();
         }
         else
         {

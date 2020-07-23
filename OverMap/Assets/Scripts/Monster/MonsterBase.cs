@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.Hero;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Assets.Scripts.Hero;
 using UnityEngine;
 
 namespace Assets.Scripts.Monster
@@ -13,7 +15,7 @@ namespace Assets.Scripts.Monster
         {
             isCanSelect = false;
             isMonster = true;
-            strength = 3;
+            speed = 15;
             unitBase = new HeroBase
             {
                 attack = 1,
@@ -22,6 +24,17 @@ namespace Assets.Scripts.Monster
                 unit = this,
             };
         }
+
+        readonly WaitForSeconds m_Seconds = new WaitForSeconds(0.2f);
+        public IEnumerator Attack(HeroBase monster)
+        {
+            yield return m_Seconds;
+            unitBase.hp -= (monster.attack > unitBase.defend) ? monster.attack - unitBase.defend : 0;
+            Debug.Log("英雄所剩血量：" + unitBase.hp);
+            Debug.Log("怪物所剩血量：" + monster.hp);
+            RoundManager.Instance.currentMonsterMoveOver = true;
+        }
+
 
         public virtual void FindHeroCell()
         {
@@ -34,26 +47,36 @@ namespace Assets.Scripts.Monster
                 }
                 else
                 {
-                    Debug.Log("攻击英雄");
+                    StartCoroutine(Attack(HexGameUI.Instrance.selectedUnit.unitBase));
                 }
             }
-            RoundManager.Instance.currentMonsterMoveOver = true;
         }
 
         //todo 需要添加判断是否在英雄周围，如果是在周围，直接返回周围的cell
-        HexCell GetToCell(HexCell cell)
+        HexCell GetToOverCell(HexCell cell)
         {
             HexCell toCell = new HexCell { Index = -1 };
             int distance = cell.coordinates.DistanceTo(Location.coordinates);
-            strength = strength < distance ? strength : distance - 1;
-            for (int i = 0; i < strength; i++)
+            if (strength < distance)
             {
-                toCell = toCell.Index == -1 ? Location.GetNeighbor(MonsterGetHexDirection(cell, Location)) : toCell.GetNeighbor(MonsterGetHexDirection(cell, toCell));
+                for (int i = 0; i < strength; i++)
+                {
+                    toCell = toCell.Index == -1 ? Location.GetNeighbor(MonsterGetHexDirection(cell, Location)) : toCell.GetNeighbor(MonsterGetHexDirection(cell, toCell));
+                    while (toCell.Unit != null)
+                    {
+                        toCell = toCell.GetNeighbor(MonsterGetHexDirection(Location, toCell));
+                    }
+                }
             }
+            else
+            {
+                toCell = GetToCell(cell);
+            }
+        
             return toCell;
         }
 
-        HexCell GetToCell(HexCell cell, HexDirection direction)
+        HexCell GetToCell(HexCell cell)
         {
             HexCell toCell = new HexCell();
             HexDirection hexDirection = GetHexDirection(cell);
