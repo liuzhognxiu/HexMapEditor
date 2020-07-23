@@ -225,8 +225,8 @@ public class HexMapGenerator : MonoBehaviour
         }
         CreateRegions();
         //创建英雄和怪物之后，生成除了英雄和怪物格子外的所有cell都为buff格子
-        CreateMonster();
         CreateHero();
+        CreateMonster();
         CreateBuff();
         SetTerrainType();
 
@@ -365,11 +365,12 @@ public class HexMapGenerator : MonoBehaviour
     public void CreateMonster()
     {
         HexCell cell = GetRandomCell(regions[0]);
+
         HexUnit monsterUnit = Instantiate<MonsterBase>(monster);
         grid.AddUnit(
             monsterUnit, cell, Random.Range(0f, 360f)
         );
-        cell.Unit.ValidateLocation();
+        if (cell.Unit != null) cell.Unit.ValidateLocation();
         cell.Buff = null;
         cell.TerrainTypeIndex = 0;
         RoundManager.Instance.monsterHexUnits.Enqueue((MonsterBase)monsterUnit);
@@ -1128,9 +1129,13 @@ public class HexMapGenerator : MonoBehaviour
 
     HexCell GetRandomCell(MapRegion region)
     {
-        return grid.GetCell(
+        HexCell randomCell = grid.GetCell(
             Random.Range(region.xMin, region.xMax),
             Random.Range(region.zMin, region.zMax)
         );
+        //如果cell上已经有怪物了，再次随机
+        if (randomCell.Unit != null)
+            randomCell = GetRandomCell(region);
+        return randomCell;
     }
 }

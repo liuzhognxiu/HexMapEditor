@@ -37,6 +37,10 @@ public class RoundManager : MonoSingleton<RoundManager>
             monster.FindHeroCell();
             currentMonsterMoveOver = false;
         }
+        else
+        {
+            currentMonsterMoveOver = true;
+        }
     }
 
 }

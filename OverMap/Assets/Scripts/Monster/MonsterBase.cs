@@ -35,9 +35,9 @@ namespace Assets.Scripts.Monster
                 else
                 {
                     Debug.Log("攻击英雄");
-                    RoundManager.Instance.currentMonsterMoveOver = true;
                 }
             }
+            RoundManager.Instance.currentMonsterMoveOver = true;
         }
 
         //todo 需要添加判断是否在英雄周围，如果是在周围，直接返回周围的cell
@@ -83,11 +83,11 @@ namespace Assets.Scripts.Monster
             {
                 if (toCell.coordinates.Y < cell.coordinates.Y)
                 {
-                    return HexDirection.NE;
+                    return HexDirection.SW;
                 }
                 else
                 {
-                    return HexDirection.SW;
+                    return HexDirection.NE;
                 }
             }
             if (toCell.coordinates.X > cell.coordinates.X)

@@ -43,25 +43,20 @@ public class HexGameUI : MonoBehaviour
         {
             if (selectedUnit && selectedUnit.isCanSelect)
             {
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButton(1))
                 {
                     //先添加攻击目标，后添加寻路点
                     UpdateCurrentCell();
                     SelectAttackTarget();
                     AddSearchFrontier();
                 }
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButton(0))
                 {
                     DeleteSearchFrontier();
                 }
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
                     DoMove();
-                }
-
-                if (Input.GetKeyDown(KeyCode.C))
-                {
-                    HexMapGenerator.Instrance.CreateMonster();
                 }
             }
 

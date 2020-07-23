@@ -19,12 +19,11 @@ namespace Assets.Scripts.Manager
             {
                 if (HexGameUI.Instrance.selectedUnit.isMoveOver)
                 {
-                    if (RoundManager.Instance.currentIsOver && RoundManager.Instance.currentMonsterMoveOver)
+                    if (RoundManager.Instance.currentIsOver && (RoundManager.Instance.currentMonsterMoveOver || RoundManager.Instance.monsterHexUnits.Count == 0))
                     {
                         RoundManager.Instance.MonsterDoMove();
                     }
                 }
-
                 if (RoundManager.Instance.currentMonsterMoveOver && RoundManager.Instance.monsterHexUnits.Count == 0 && HexGameUI.Instrance.selectedUnit.isMoveOver)
                 {
                     RoundManager.Instance.currentIsOver = true;
