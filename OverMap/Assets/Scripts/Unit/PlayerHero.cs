@@ -66,7 +66,6 @@ namespace Assets.Scripts.Unit
         {
             yield return m_Seconds;
             monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
-            Debug.Log("英雄所剩血量：" + unitBase.hp);
             Debug.Log("怪物所剩血量：" + monster.hp);
 
             if (monster.hp > 0)

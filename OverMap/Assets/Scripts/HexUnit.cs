@@ -183,6 +183,7 @@ public class HexUnit : MonoBehaviour
         m_Orientation = transform.localRotation.eulerAngles.y;
         ListPool<HexCell>.Add(pathToTravel);
         pathToTravel = null;
+        PathfindOverBack.Invoke();
         if (isMonster)
         {
             Location.Buff = null;
