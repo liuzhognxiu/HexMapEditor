@@ -21,8 +21,9 @@ namespace Assets.Scripts.Unit
 
         public TextMesh text;
 
-        void Start()
+        private new void Start()
         {
+            base.Start();
             unitBase = new HeroBase
             {
                 unit = this,
@@ -62,12 +63,16 @@ namespace Assets.Scripts.Unit
         }
 
         readonly WaitForSeconds m_Seconds = new WaitForSeconds(0.2f);
+        readonly WaitForSeconds m_4Seconds = new WaitForSeconds(0.5f);
         public IEnumerator Attack(HeroBase monster)
         {
             yield return m_Seconds;
-            monster.hp -= (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
+            int hp = (unitBase.attack > monster.defend) ? unitBase.attack - monster.defend : 0;
+            monster.hp -= hp;
             Debug.Log("怪物所剩血量：" + monster.hp);
-
+            shootTextProController.DelayMoveTime = 0.4f;
+            shootTextProController.textAnimationType = TextAnimationType.Burst;
+            shootTextProController.CreateShootText($"-{hp}", monster.unit.transform);
             if (monster.hp > 0)
             {
                 Debug.Log("暂停本次寻路");
@@ -76,6 +81,11 @@ namespace Assets.Scripts.Unit
                 Grid.showhexCells.Clear();
                 attackHexUnits.Clear();
                 CorrectCell();
+            }
+            else
+            {
+                yield return m_4Seconds;
+                monster.unit.Die();
             }
         }
 

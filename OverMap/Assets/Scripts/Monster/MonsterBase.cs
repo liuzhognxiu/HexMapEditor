@@ -7,11 +7,9 @@ namespace Assets.Scripts.Monster
 {
     public class MonsterBase : HexUnit
     {
-        /// <summary>
-        /// 每次行动的行动力
-        /// </summary>
-        public void Start()
+        public new void Start()
         {
+            base.Start();
             isCanSelect = false;
             isMonster = true;
             speed = 4;
@@ -28,8 +26,12 @@ namespace Assets.Scripts.Monster
         public IEnumerator Attack(HeroBase heroBase)
         {
             yield return m_Seconds;
-            heroBase.hp -= (unitBase.attack > heroBase.defend) ? unitBase.attack - heroBase.defend : 0;
+            int hp = (unitBase.attack > heroBase.defend) ? unitBase.attack - heroBase.defend : 0;
+            heroBase.hp -= hp;
             Debug.Log("英雄所剩血量：" + heroBase.hp);
+            shootTextProController.DelayMoveTime = 0.4f;
+            shootTextProController.textAnimationType = TextAnimationType.Burst;
+            shootTextProController.CreateShootText($"-{hp}", heroBase.unit.transform);
             RoundManager.Instance.currentMonsterMoveOver = true;
         }
 
@@ -51,6 +53,10 @@ namespace Assets.Scripts.Monster
                 {
                     StartCoroutine(Attack(HexGameUI.Instrance.selectedUnit.unitBase));
                 }
+            }
+            else
+            {
+                RoundManager.Instance.currentMonsterMoveOver = true;
             }
         }
 

@@ -31,6 +31,8 @@ public class HexUnit : MonoBehaviour
 
     public HexGrid Grid { get; set; }
 
+    public ShootTextProController shootTextProController;
+
     public HexCell Location
     {
         get => m_Location;
@@ -75,6 +77,10 @@ public class HexUnit : MonoBehaviour
         set => m_VisionRange = value;
     }
 
+    public void Start()
+    {
+        shootTextProController = this.GetComponent<ShootTextProController>();
+    }
 
     public List<HexCell> pathToTravel;
 
@@ -270,7 +276,7 @@ public class HexUnit : MonoBehaviour
         //     Grid.DecreaseVisibility(m_Location, m_VisionRange);
         // }
         m_Location.Unit = null;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void RefreshCell(HexCell cell)
